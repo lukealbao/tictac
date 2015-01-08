@@ -1,0 +1,62 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+body {
+    background-color: #333;
+}
+#wrapper {
+    position: relative;
+    margin: 0 auto;
+    width: 960px;
+    padding: 10px;
+}
+#stage {
+    margin: 0 auto;
+    margin-top: 50px;
+    position: relative;
+    top: 0;
+    width: 500px;
+    height: 600px;
+}
+#game-board {
+    background-color: #454545;
+    position: absolute;
+    width: 500px;
+    height: 500px;
+}
+.cell {
+    position: absolute;
+    border: 1px solid #ababab;
+}
+#gutter {
+    position: relative;
+    top: 500px;
+}
+#gutter h2 {
+    margin-left: 125px;
+    color: #696969;
+    font-size: 25px;
+    font-family: Helvetica;
+    line-height: 4em;
+}
+#gutter h2:before {
+    content: "\ffe9";
+    position: relative;
+    left: -5px;
+    top: 5px;
+    font-size: 2.25em;
+}
+.player-piece {
+    background-color: cyan;
+    border-radius: 6px;
+    border: 1px solid #545454;
+}
+button {
+    padding: 4px;
+    font-size: 16px;
+    font-family: Menlo, Monaco, Arial;
+    border-radius: 4px;
+}
+
+    

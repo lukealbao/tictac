@@ -1,0 +1,24 @@
+/**
+ * function buildGrid() -> DOM update
+ *
+ * Find the `#game-board` div and populate it with `.cell` divs.
+ *
+ * Requires that `config` object be in scope.
+**/
+function buildGrid() {
+    // Build the `#game-board` grid from `.cell`s
+    for (var i = 0; i < 25; i++) {
+	var y = Math.floor(i / 5) * config.gridSide,
+	    x = (i * config.gridSide) % (config.gridSize
+					 * config.gridSide);
+	$('<div/>').css({width: config.gridSide - 1,
+			 height: config.gridSide -1,
+			 top: y, left: x})
+	    .attr({idx: 24 - i,
+		   class: 'cell'})
+	    .prependTo($('#game-board'));
+	cells = $('.cell');
+    }
+}
+
+
