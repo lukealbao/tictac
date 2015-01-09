@@ -1,0 +1,18 @@
+{
+  "name": "tictactoe",
+  "version": "0.0.1",
+  "description": "A fun way to play tic tac toe",
+  "main": "index.js",
+  "scripts": {
+    "test": "None"
+  },
+  "repository": {
+    "type": "git",
+    "url": "http://www.github.com/lukealbao/tictactoe"
+  },
+  "author": "Luke Albao",
+  "license": "None",
+  "dependencies": {
+    "express": "^4.10.6"
+  }
+}

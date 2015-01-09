@@ -48,7 +48,7 @@ function setPieces(config) {
  * `config`, which is the `scope` object of the current session. 
  */
 function createDraggables(config) {
-    Draggable.create(".player-piece", {
+    return Draggable.create(".player-piece", {
 	bounds:$('#stage'),
 	edgeResistance:0.65,
 	type:"x,y",

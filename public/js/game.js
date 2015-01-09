@@ -24,10 +24,6 @@ $(document).ready(function() {
 	setPieces(scope);
 	createDraggables(scope);
     } // `initializeGameBoard()`
-
-    $('#send').click(function() {
-	console.log(JSON.stringify(scope.currentGame.pendingMove));
-    });
-    
+        
 }); // document.ready
     

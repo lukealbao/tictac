@@ -1,0 +1,105 @@
+<!doctype html>
+<html>
+  <head>
+    <script src="http://code.jquery.com/jquery-2.1.3.min.js">
+    </script>
+  </head>
+  
+  <body>
+    <label for="player">
+      <input id="player" type="textbox" />
+      Player:
+    </label>
+
+    <label for="move">
+      <input id="move" type="textbox" />
+      Move: 
+    </label>
+
+    <button id="send">
+      Send a Move!
+    </button>
+
+    <button id="get">
+      Get a Move!
+    </button>
+
+    <pre id="show">
+    </pre>
+
+    <script>
+    (function(jQ) {
+
+	function stringifyBitArray(n, width) {
+	    var string = n.toString(2),
+		pad = width - string.length;
+
+	    for (var i = 0; i < pad; i++) {
+		string = "0" + string;
+	    }
+	    return string;
+	}
+	
+
+	function prettyPrint(bitArray) {
+	    var bitArray = stringifyBitArray(bitArray, 25),
+		rowLength = Math.sqrt(bitArray.length),
+		arr = bitArray.split("");
+	    
+	    // Make sure it's square
+	    if (rowLength % 1 !== 0) {
+		throw Error("The length of the input must be a square number.");
+	    }
+
+	    for (i = 0; i < rowLength; i++) {
+		arr.splice(i * rowLength + i, 0, "\n");
+	    }
+
+	    return arr.join("");
+	}
+	
+
+	function getMove(player) {
+	    var uri = "http://localhost:3000/play/" + player;
+	    var xhr = new XMLHttpRequest();
+	    xhr.open("GET", uri);
+	    xhr.onreadystatechange = function() {
+		if (xhr.readyState == 4) {
+		    var data = JSON.parse(xhr.responseText);
+		    $("#show").text(prettyPrint(data.boardState));
+		}};
+	    xhr.send();
+	}
+	
+
+	function putMove(player, move) {
+	    var uri = "http://localhost:3000/play/" + player + "/" + move;
+	    var xhr = new XMLHttpRequest();
+	    xhr.open("PUT", uri);
+	    xhr.onreadystatechange = function() {
+		if (xhr.readyState == 4) {
+		    var data = JSON.parse(xhr.responseText);
+		    $("#show").text(prettyPrint(data.boardState));
+		}};
+	    xhr.send();
+	}
+
+	$("#send").click(function() {
+	    var player = $("#player").val(),
+		move = $("#move").val();
+	    putMove(player, move);
+	    console.log("Sent!");
+	});
+	
+	$("#get").click(function() {
+	    var player = $("#player").val();
+	    getMove(player);
+	    console.log("Got!");
+	});
+		
+
+	    })($);
+
+    </script>
+  </body>
+</html>
