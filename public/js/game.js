@@ -1,15 +1,16 @@
 $(document).ready(function() {
     var scope = {
+	socket: io(),
 	gridSide: 100, // 100px to a side
 	gridSize: 5, // 5x5 
 	currentGame: {
 	    gid: null,
-	    0: null,
-	    1: null,
-	    2: null,
+	    player0: {element: null, idx: null},
+	    player1: {element: null, idx: null},
+	    player2: {element: null, idx: null},
 	    state: function() {
-		if (this[0] && this[1] && this[2]) {
-		    return [this[0], this[1], this[2]]
+		if (this['player0'] && this['player1'] && this['player2']) {
+		    return [this['player0'], this['player1'], this['player2']]
 			.map(function(idx) {return 1 << idx})
 			.reduce(function(a, b) {return a + b})
 		}
@@ -21,9 +22,19 @@ $(document).ready(function() {
     initializeGameBoard();    
     function initializeGameBoard() {
 	buildGrid(scope);
-	setPieces(scope);
-	createDraggables(scope);
+	scope.createPieces = pieceFactory(scope);
+	setTimeout(function(){scope.createPieces.next()}, 1500);
+
+	
     } // `initializeGameBoard()`
+
+    scope.socket.emit('whoami', {user: 1});
+    scope.socket.on('moveResponse', function(data) {
+	setTimeout(function(){
+	    scope.createPieces.next()}, 1500);
+	console.log(data);
+    });
+    scope.socket.on('message', function(data) {console.log(data)});
         
 }); // document.ready
     
