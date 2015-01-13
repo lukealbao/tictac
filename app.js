@@ -24,19 +24,41 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 var openSockets = {};
 var currentUser = 0;
+
+// FEATURE
+var validGames = require('./lib/singlePlayer');
+var winningGames = require('./lib/winningStates');
+
 io.on('connection', function(socket) {
     console.log('User socket: %s connected ', socket.id);
     openSockets[++currentUser] = socket.id;
-    socket.uid = currentUser;
-    console.log(JSON.stringify(openSockets));
-    console.log(JSON.stringify(Object.keys(io.sockets.connected)));
+    socket.uid = currentUser; // FEATURE
+    socket.gameState = 0;
     socket.on('disconnect', function() {
 	console.log('User disconnected');
 	if (openSockets[socket.uid]) delete openSockets[socket.uid];
     });
     socket.on('move', function(data) {
-	console.log('Socket Received!', data);	
-	io.sockets.connected[openSockets['2']].emit('message', {sendingSocket: socket.id, sendingUser: socket.uid});
+	
+	console.log('Socket Received!', data);
+	var response = {};
+	var proposedMove = socket.gameState + (1 << data.move.to)
+	    - (data.move.from? (1 << data.move.from) : 0);
+
+	console.log('proposed: ', proposedMove);
+	console.log('current: ', socket.gameState );
+	if (validGames.indexOf(proposedMove) > -1) {
+	    socket.gameState = proposedMove;
+	    response.acceptedState = socket.gameState;
+	} else {
+	    response.error = "That is an invalid move."
+	};
+
+	if (winningGames.indexOf(proposedMove) > -1) {
+	    response.winning = true;
+	}
+	socket.emit('moveResponse', response);
+	
     });  
     socket.write('hello, you are %s connected to %id'.replace('%s', socket.uid)
 		 .replace('%id', socket.id));
@@ -75,4 +97,4 @@ app.use(function(err, req, res, next) {
 
 
 module.exports = app;
-console.log(process.env);
+

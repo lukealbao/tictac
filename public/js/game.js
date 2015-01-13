@@ -5,9 +5,9 @@ $(document).ready(function() {
 	gridSize: 5, // 5x5 
 	currentGame: {
 	    gid: null,
-	    player0: {element: null, idx: null},
-	    player1: {element: null, idx: null},
-	    player2: {element: null, idx: null},
+	    player0: {element: null, idx: 0},
+	    player1: {element: null, idx: 0},
+	    player2: {element: null, idx: 0},
 	    state: function() {
 		if (this['player0'] && this['player1'] && this['player2']) {
 		    return [this['player0'], this['player1'], this['player2']]
@@ -34,7 +34,10 @@ $(document).ready(function() {
 	    scope.createPieces.next()}, 1500);
 	console.log(data);
     });
-    scope.socket.on('message', function(data) {console.log(data)});
+    scope.socket.on('message', function(data) {
+	console.log(data);
+	// console.log(scope.state());
+    });
         
 }); // document.ready
     
