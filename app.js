@@ -5,65 +5,100 @@ var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
 
-/* SERVER */
+
+// App Server
 var express = require('express');
 var app = express();
 var http = require('http').Server(app);
 var server = http.listen(3030);
 var io = require('socket.io')(server);
+var debug = require('debug')(app);
+var async = require('async');
 
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
+// Game Controller
+var GameController = require('./lib/game-controller');
+var dealer = new GameController(0);
+
+// AI Controller
+var machine = require('./lib/ai-controller');
+var machineSocket;
+
+// Socket.io
+app.connectedUsers = {};
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(__dirname + '/public/favicon.ico'));
 app.use(logger('dev'));
-
 app.use(express.static(path.join(__dirname, 'public')));
 
-var openSockets = {};
-var currentUser = 0;
-
-// FEATURE
-var validGames = require('./lib/singlePlayer');
-var winningGames = require('./lib/winningStates');
-
-io.on('connection', function(socket) {
-    console.log('User socket: %s connected ', socket.id);
-    openSockets[++currentUser] = socket.id;
-    socket.uid = currentUser; // FEATURE
-    socket.gameState = 0;
-    socket.on('disconnect', function() {
-	console.log('User disconnected');
-	if (openSockets[socket.uid]) delete openSockets[socket.uid];
+io.sockets.on('connection', function (socket) {
+    
+    socket.on('Hello', function (data) {
+	app.connectedUsers[data.user] = socket.id;
+	socket.pid = data.user;
+	socket.emit('Hello', {user: data.user,
+			      currentSocket: socket.id});
     });
-    socket.on('move', function(data) {
-	
-	console.log('Socket Received!', data);
+
+    socket.on('Request New Game', function (playerChoice) {
 	var response = {};
-	var proposedMove = socket.gameState + (1 << data.move.to)
-	    - (data.move.from? (1 << data.move.from) : 0);
-
-	console.log('proposed: ', proposedMove);
-	console.log('current: ', socket.gameState );
-	if (validGames.indexOf(proposedMove) > -1) {
-	    socket.gameState = proposedMove;
-	    response.acceptedState = socket.gameState;
+	if (!playerChoice) {
+	    response.error = 'You must choose a player';
+	    socket.emit('New Game Response', response);
 	} else {
-	    response.error = "That is an invalid move."
-	};
-
-	if (winningGames.indexOf(proposedMove) > -1) {
-	    response.winning = true;
+	    
+	    var xId = playerChoice === 'x' ? socket.pid : 'machine';
+	    var oId = playerChoice === 'o' ? socket.pid : 'machine';
+	    dealer.createGame(socket.id, xId, oId, function (err, res) {
+		if (err) {
+		    response.error = err;
+		    socket.emit('New Game Response', response);
+		} else {
+		    response.ok = true;
+		    response.game = res;
+		    socket.emit('New Game Response', response);
+		}
+	    });
 	}
-	socket.emit('moveResponse', response);
-	
-    });  
-    socket.write('hello, you are %s connected to %id'.replace('%s', socket.uid)
-		 .replace('%id', socket.id));
+    });
+
+    socket.on('Move Request', function (request) {
+	dealer.processMoveRequest(request, function (err, res) {
+	    socket.emit('Move Response', err || res);
+	});
+    });
+
+    socket.on('disconnect', function () {
+	delete app.connectedUsers[socket.pid];
+    });
 });
 
+
+/*
+io.on('connection', function(socket) {
+
+    // Register AI's socket.id
+    socket.on('register', function(user) {
+	if (user === 'Machine') {
+ 	    console.log('Machine registered at', socket.id);
+	    machineSocket = socket.id;
+	}
+    });
+  
+    // Accept requests for moves	
+    socket.on('move', function(request) {
+	console.log('Socket', socket.id, 'requests move',
+		    JSON.stringify(request));
+	dealer.processMoveRequest(request, function(response) {
+	    socket.emit('moveResponse', response);
+	    io.to(response.nextMove).emit('Your Move', response.game);
+	});	
+    });
+    
+    socket.write('hello, you are connected to %id'
+		 .replace('%id', socket.id));
+});
+*/
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
     var err = new Error('Not Found');
@@ -95,6 +130,6 @@ app.use(function(err, req, res, next) {
     });
 });
 
+console.info('Now listening for connections....')
 
 module.exports = app;
-

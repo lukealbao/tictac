@@ -9,22 +9,24 @@
     <script src="http://cdnjs.cloudflare.com/ajax/libs/gsap/1.15.0/utils/Draggable.min.js"></script>
     <script src="https://cdn.socket.io/socket.io-1.2.1.js"></script>
     <!-- <script src="./ThrowPropsPlugin.min.js"></script> -->
-    <script src="js/initializations.js"></script>
+    <script src="js/client-mvc.js"></script>
     <script src="js/game.js"></script>
   </head>
 <body>
-  <div id="wrapper">
-    <div id="stage">
-      <div id="game-board">
-      </div>
-      <div id="gutter">
-	  <h2>Place a piece on the board.</h2>
-      </div>
-    </div> <!-- Stage -->
-    <div id="controls">
-      <div id="info-box">
-      </div>
-    </div>
+    <div id="wrapper">
+	<div id="stage">
+	    <div id="game-board">
+	    	<div idx="home-plate">
+		</div>
+	    </div>
+	    <div id="gutter">
+		<h2>Place a piece on the board.</h2>
+	    </div>
+	</div> <!-- Stage -->
+	<div id="controls">
+	    <div id="info-box">
+	    </div>
+	</div>
   </div>
 </body>
 </html>

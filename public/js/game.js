@@ -1,42 +1,59 @@
 $(document).ready(function() {
-    var scope = {
+
+/*--------------------------------------------------*\
+ |   $env Object holds all client-side variables    |
+\*--------------------------------------------------*/
+    var $env = {
 	socket: io(),
-	gridSide: 100, // 100px to a side
-	gridSize: 5, // 5x5 
-	currentGame: {
-	    gid: null,
-	    player0: {element: null, idx: 0},
-	    player1: {element: null, idx: 0},
-	    player2: {element: null, idx: 0},
-	    state: function() {
-		if (this['player0'] && this['player1'] && this['player2']) {
-		    return [this['player0'], this['player1'], this['player2']]
-			.map(function(idx) {return 1 << idx})
-			.reduce(function(a, b) {return a + b})
-		}
-	    },
-	    pendingMove: null
-	}
-    }; // scope
+	cellSize: 100, // 100px to a side
+	gridSize: 25, 
+	currentGame: null,
+	piecesOnBoard: 0,
+	me: function() { return this.currentGame.me }
+    }; // $env
 
-    initializeGameBoard();    
+/*--------------------------------------------------*\
+ |               Set up a new Game                  |
+\*--------------------------------------------------*/
     function initializeGameBoard() {
-	buildGrid(scope);
-	scope.createPieces = pieceFactory(scope);
-	setTimeout(function(){scope.createPieces.next()}, 1500);
+	buildGrid($env);
+	$env.socket.emit('request new game');
+	$env.socket.on('new game', function(game) {
+	    $env.currentGame = game;
+	});
 
-	
-    } // `initializeGameBoard()`
+	setTimeout(function() {
+	    createPiece($env, {pieceId: 'player' + $env.piecesOnBoard,
+			       cell: 'home-plate'});
+	}, 2500);
+    }
+    initializeGameBoard();
+   
 
-    scope.socket.emit('whoami', {user: 1});
-    scope.socket.on('moveResponse', function(data) {
-	setTimeout(function(){
-	    scope.createPieces.next()}, 1500);
+/*--------------------------------------------------*\
+ |            Socket.io View Handlers               |
+\*--------------------------------------------------*/
+    
+    $env.socket.on('moveResponse', function(data) {
+	if (data.ok) {
+	    $env.currentGame = data.game;
+	    $env.piecesOnBoard++;
+	    console.log('player0', $env.currentGame.x['player0']);
+	}
+	console.log(data);
+	if (data.winning) alert('You win!!');
+    });
+    
+    $env.socket.on('message', function(data) {
 	console.log(data);
     });
-    scope.socket.on('message', function(data) {
-	console.log(data);
-	// console.log(scope.state());
+    
+    $env.socket.on('Your Move', function(data) {
+	$env.currentGame = data;
+	if ($env.piecesOnBoard < 3) {
+	    createPiece($env, {pieceId: 'player' + $env.piecesOnBoard,
+			       cell: 'home-plate'});
+	}
     });
         
 }); // document.ready
