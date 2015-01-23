@@ -113,6 +113,12 @@ describe('[MODULE: ai-controller]', function () {
 	    expect(result4deep).to.equal(448);
 	});
 
+	it('Builds a pretty tree that allows us to see execution',
+	   function () {
+	       ai.alphaBetaSearch(checkMatePlayer, checkMateGame,
+				  3, -Infinity, Infinity, true);
+	   });
+
 	it('Does not return a proven bad move when others are available',
 	   function () {
 	       var result = ai.calculateMove(0, 1 << 12, 3);
