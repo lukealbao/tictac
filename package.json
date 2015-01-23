@@ -3,7 +3,7 @@
     "version": "0.0.0",
     "private": true,
     "scripts": {
-	"start": "node ./app.js",
+	"start": "redis-server & node ./app.js",
 	"test" : "mocha",
 	"cover": "istanbul cover _mocha && open ./test/coverage/lcov-report/index.html"
     },

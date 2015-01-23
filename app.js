@@ -9,11 +9,12 @@ var logger = require('morgan');
 // App Server
 var express = require('express');
 var app = express();
+var config = require('./app-config');
 var http = require('http').Server(app);
 var server = http.listen(3030);
 var io = require('socket.io')(server);
 var debug = require('debug')(app);
-var async = require('async');
+app.set('view engine', 'jade');
 
 // Game Controller
 var GameController = require('./lib/game-controller');
@@ -40,15 +41,16 @@ io.sockets.on('connection', function (socket) {
 			      currentSocket: socket.id});
     });
 
-    socket.on('Request New Game', function (playerChoice) {
+    socket.on('Request New Game', function (options) {
+	var opponent = options.opponent || 'Machine';
+	var playerChoice = options.player || 'x';
 	var response = {};
 	if (!playerChoice) {
 	    response.error = 'You must choose a player';
 	    socket.emit('New Game Response', response);
-	} else {
-	    
-	    var xId = playerChoice === 'x' ? socket.pid : 'machine';
-	    var oId = playerChoice === 'o' ? socket.pid : 'machine';
+	} else {	    
+	    var xId = playerChoice === 'x' ? socket.pid : opponent;
+	    var oId = playerChoice === 'o' ? socket.pid : opponent;
 	    dealer.createGame(socket.id, xId, oId, function (err, res) {
 		if (err) {
 		    response.error = err;
@@ -63,8 +65,13 @@ io.sockets.on('connection', function (socket) {
     });
 
     socket.on('Move Request', function (request) {
+	console.log(request.player, 'Requests:', request);
 	dealer.processMoveRequest(request, function (err, res) {
 	    socket.emit('Move Response', err || res);
+	    if (!err) {
+		io.to(app.connectedUsers[res.nextMove])
+		    .emit('Your Move', res.game);
+	    }
 	});
     });
 
@@ -110,7 +117,7 @@ app.use(function(req, res, next) {
 
 // development error handler
 // will print stacktrace
-if (app.get('env') === 'development') {
+if (false) { //if (app.get('env') === 'development') {
     app.use(function(err, req, res, next) {
         res.status(err.status || 500);
         res.render('error', {

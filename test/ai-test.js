@@ -4,13 +4,13 @@ chai.use(require('chai-things'));
 var expect = chai.expect;
 var bits = require('../lib/bits');
 var ai = require('../lib/ai-controller');
-var winningScore = 2; // Three in a row
-var pinnedScore = 0.6667; // Two in a row w/ opponent between
-var attackingScore = 1; // Two in a row w/ nothing betweeen
+var winningScore = 6; // Three in a row
+var pinnedScore = 0.5; // Two in a row w/ opponent between
+var attackingScore = 2; // Two in a row w/ nothing betweeen
 var winningPlayer = bits.setFlags([6,7,8]);
 var winningGame = bits.setFlags([6,7,8, 12,17,11]);
-var checkMatePlayer = bits.setFlags([6,8,18]);
-var checkMateGame = bits.setFlags([6,8,18, 12,17,11]);
+var checkMatePlayer = bits.setFlags([7,8,18]);
+var checkMateGame = bits.setFlags([7,8,18, 12,17,11]);
 
 
 describe('[MODULE: ai-controller]', function () {
@@ -39,55 +39,162 @@ describe('[MODULE: ai-controller]', function () {
 	    results.should.include.something.that
 		.deep.equals({player: winningPlayer, game: winningGame});
 	});
+
+	it('Does not return moves that overlap with the root', function () {
+	    var result = ai.getMoves(2, 3);
+	    for (var i = 0, l = result.length; i < l; i++) {
+		expect(result[i].player & 1).to.equal(0);
+		expect(result[i].player).to.not.equal(2);
+	    }
+	});
+
+	it('Returns a list of moves on an empty board', function () {
+	    var results = ai.getMoves(0, 0);
+	    expect(results.length).to.equal(25);
+	});
+
     });
 
     describe('#score()', function () {
-	it('Returns 2 for a winning state', function () {
-	    var result = ai.score(winningPlayer, winningGame, true);
-	    expect(result).to.be.equal(2);
-	});
 
-	it('Returns -2 for a losing state', function () {
+	it('Returns -6 for a losing state', function () {
 	    var result = ai.score(winningPlayer, winningGame, false);
-	    expect(result).to.be.equal(-2);
+	    expect(result).to.be.equal(-winningScore);
 	});
 
-	it('Returns a maximum absolute value of 2', function () {
-	    var result = ai.score(checkMatePlayer, checkMateGame, true);
-	    expect(result).to.be.equal(2);
+	it('Returns a 0-score for a single piece', function () {
+	    expect(ai.score(0, 32, true)).to.equal(0);
+	    expect(ai.score(0, 32, false)).to.equal(0);
 	});
+
+	it('Returns a 6-score when winning', function () {
+	    var result = ai.score(winningPlayer, winningGame, true);
+	    expect(result).to.equal(winningScore);
+	});
+
+	it('Returns a 4 when attacking two cells', function () {
+	    var result = ai.score(checkMatePlayer, checkMateGame, true);
+	    expect(result).to.equal(4);
+	});
+
+	it('Returns a 2 when attacking one cell', function () {
+	    var player = bits.setFlags([6, 8, 17]);
+	    var game = bits.setFlags([6, 8, 17, 16, 13, 12])
+	    var result = ai.score(player, game, true);
+	    expect(result).to.equal(2);
+	});
+
+	it('Returns a 1 when pinning an opponent', function () {
+	    var player = bits.setFlags([6, 8, 17]);
+	    var game = bits.setFlags([6, 8, 17, 7, 12, 13]);
+	    var result = ai.score(player, game, true);
+	    expect(result).to.equal(1);
+	});
+
     });
 
-   describe('#minMax()', function() {
+
+    describe('#calculateMove()', function () {
+	it('Returns a winning move at depth 2', function () {
+	    var result2deep = ai.calculateMove(checkMatePlayer,
+					       checkMateGame, 2);
+	    expect(result2deep).to.equal(448);
+	});
+
+	it('Returns a winning move at depth 3', function () {
+	    var result3deep = ai.calculateMove(checkMatePlayer,
+					       checkMateGame, 3);
+	    expect(result3deep).to.equal(448);
+	});
+
+	it('Returns a winning move at depth 4', function () {
+	    var result4deep = ai.calculateMove(checkMatePlayer,
+					       checkMateGame, 4);
+	    expect(result4deep).to.equal(448);
+	});
+
+	it('Does not return a proven bad move when others are available',
+	   function () {
+	       var result = ai.calculateMove(0, 1 << 12, 3);
+	       result.should.not.equal(24);
+	   });
+
+	// old MinMax tests
        it('Returns a winning score for a winning game at depth 0',
 	  function () {
-	      var result = ai.minMax(winningPlayer, winningGame, 0,
-				     true, ai.getMoves, ai.score);
+	      var result = ai.alphaBetaSearch(winningPlayer,
+					      winningGame, 0,
+					      -Infinity, Infinity, true);
 	      expect(result).to.equal(winningScore);
 	  });
 
        it('Returns a winning next move for a checkmate position',
 	  function () {
-	      var result = ai.minMax(checkMatePlayer, checkMateGame, 2,
-				     true, ai.getMoves, ai.score);
+	      var result = ai.calculateMove(checkMatePlayer,
+					    checkMateGame, 3);
 	      
 	      expect([bits.setFlags([6,7,8]), bits.setFlags([8,13,18])])
 		  .to.include.members([result]);
 	  }
  	 );
-       
-       it('Returns a score for a depth <= 1', function () {
-	   var result = ai.minMax(checkMatePlayer, checkMateGame, 1,
-				  true, ai.getMoves, ai.score);
-	   expect(result).to.be.below(3);
-       });
-       
-       it('Returns a candidate for a depth > 1', function () {
-	   var result = ai.minMax(checkMatePlayer, checkMateGame, 2,
-				  true, ai.getMoves, ai.score);
-	   expect(result).to.be.above(100);
-       });
 
-    });
-    
+	it('Returns moves that don\'t overlap current state', function () {
+	    var game = {x: {player0: 12,
+			    player1: 10,
+			    player2: 6,
+			    state: bits.setFlags([12,10,6]),
+			    piecesOnBoard: 3},
+			o: {player0: 0,
+			    player1: 1,
+			    player2: 1 << 25,
+			    state: 3,
+			    piecesOnBoard: 2},
+			turn: 'o'
+		       };
+	    var result = ai.calculateMove(game.o.state,
+					  game.o.state + game.x.state, 3);
+
+	    expect(result).to.not.equal(5);
+	});
+	   
+   });
+
+    describe('#prepareMove()', function () {
+
+	it('Transforms a #calculateMove result to a move request object',
+	   function () {
+	       var game = {
+		   gid: 'test',
+		   o: {player0: 1, player1: 1 << 25,
+		       player2: 1 << 25, state: 2, piecesOnBoard: 1}
+	       };
+	    
+	       var bestMove = 3;
+	       var expectedResult = {
+		   gid: 'test', player: 'o',
+		   piece: 'player1', from: 1 << 25, to: 0
+	       };
+
+	       expect(ai.prepareMove(game, bestMove))
+		      .to.deep.equal(expectedResult);
+	   });
+
+	it('Works when there are three pieces on the board', function () {
+	    var game = {
+		gid: 'test',
+		o: {player0: 0, player1: 1, player2: 5,
+		    piecesOnBoard: 3, state: 35
+		   }
+	    };
+	    var bestMove = bits.setFlags([0,1,7]);
+	    var expectedResult = {
+		gid: 'test', player: 'o',
+		piece: 'player2', from: 5, to: 7
+	    };
+
+	    expect(ai.prepareMove(game, bestMove))
+		.to.deep.equal(expectedResult);
+	
+	});
+    });   
 });

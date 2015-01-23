@@ -176,6 +176,6 @@ function submitMove ($env, piece, to) {
 		   to: to
 		  };
     
-    $env.socket.emit('move', request);
+    $env.socket.emit('Move Request', request);
 }
 	

@@ -43,7 +43,8 @@ describe('[MODULE: app.js]', function () {
 	       var client1 = io.connect(url, options);
 	       client1.once('Hello', function (response) {
 		   expect(response.user).to.equal('test user1');
-		   expect(response.currentSocket).to.be.a('string');
+		   expect(app.connectedUsers['test user1'])
+		       .to.equal(response.currentSocket);
 		   client1.disconnect();
 		   done();
 	       });
@@ -83,7 +84,7 @@ describe('[MODULE: app.js]', function () {
 	    var client3 = io.connect(url, options);
 
 	    client3.once('Move Response', function (data) {
-		expect(data.error).to.equal(undefined);
+		expect(data.errorReason).to.equal(undefined);
 		expect(data.game.x.state).to.equal(1 << 12);
 		expect(data.game.turn).to.equal('o');
 		done();
@@ -94,7 +95,7 @@ describe('[MODULE: app.js]', function () {
 		    gid: data.game.gid,
 		    player: 'x',
 		    piece: 'player2',
-		    from: 0,
+		    from: 1 << 25,
 		    to: 12
 		};
 		expect(data.game.gid).to.be.a('string');
@@ -104,6 +105,55 @@ describe('[MODULE: app.js]', function () {
 	    client3.on('connect', function () {
 		client3.emit('Hello', {user: 'test user3'});
 		client3.emit('Request New Game', 'o');
+	    });
+	});
+
+	it('Alerts the proper player when turns change', function (done) {
+	    var client1 = io.connect(url, options);
+	    var client2 = io.connect(url, options);
+	    var gid;
+
+	    client1.on('connect', function () {
+		client1.emit('Hello', {user: 'client 1'});
+	    });
+
+	    client1.on('Hello', function (data) {
+		expect(data.user).to.equal('client 1');
+		expect(app.connectedUsers['client 1'])
+		    .to.equal(data.currentSocket);
+	    });
+
+	    // Client2 initiates game and takes first move
+	    client2.on('connect', function () {
+		client2.emit('Hello', {user: 'client 2'});
+		client2.emit('Request New Game', {player:'x',
+						  opponent: 'client 1'});
+	    });
+	    
+	    client2.on('New Game Response', function (data) {
+		gid = data.game.gid
+		expect(data.error).to.equal(undefined);
+		client2.emit('Move Request',
+			     {gid: gid,
+			      player: 'x',
+			      from: 1 << 25,
+			      to: 12,
+			      piece: 'player0'
+			     });
+	    });
+
+	    client2.on('Move Response', function (response) {
+
+		setTimeout(function () {
+		    expect(false).to.equal('Your Move never fired.');
+		    done();
+		    }, 500);
+	    });
+
+	    // Client1 receives the message
+	    client1.on('Your Move', function (game) {
+		expect(game.gid).to.equal(gid);
+		done();
 	    });
 	});
     });

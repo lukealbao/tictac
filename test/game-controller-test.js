@@ -58,7 +58,8 @@ describe('[MODULE game-controller.js]', function () {
 	});
 
 	it('Accepts a move and updates game state', function (done) {
-	    var request = {player: 'x', from: 0, to: 7, piece: 'player2'};
+	    var request = {player: 'x', from: 1 << 25,
+			   to: 7, piece: 'player2'};
 	    controller.submitMove(testGame, request, function (err, res) {
 		expect(err).to.equal(null);
 		expect(testGame.turn).to.equal('o');
@@ -76,6 +77,36 @@ describe('[MODULE game-controller.js]', function () {
 	       controller.submitMove(testGame, request, function (err, res) {
 		   expect(err.error).to.equal('Invalid move');
 		   done();
+	       });
+	   });
+
+	it('Rejects a move when the the request overlaps with itself',
+
+	   function () {
+	       var request = {player: 'o',
+			      from: 25, to: 0, piece: 'player2'};
+	       var game = {gid: 'test',
+			   turn: 'o',
+			   x: {
+			       pid: 'x',
+			       player0: 12,
+			       player1: 10,
+			       player2: 6,
+			       state: 5184,
+			       piecesOnBoard: 3
+			   },
+			   o: {
+			       pid: 'o',
+			       player0: 0,
+			       player1: 1,
+			       player2: 1 << 25,
+			       state: 3,
+			       piecesOnBoard: 2
+			   }
+			  };
+
+	       controller.submitMove(game, request, function (err, res) {
+		   err.errorReason.should.equal('That space is occupied');
 	       });
 	   });
 
@@ -141,7 +172,7 @@ describe('[MODULE game-controller.js]', function () {
 	    var request = {gid: testGame.gid,
 			   player: 'x',
 			   piece: 'player2',
-			   from: 0,
+			   from: 1 << 25,
 			   to: 12};
 	    controller.processMoveRequest(request, callback);
 	    function callback (err, res) {

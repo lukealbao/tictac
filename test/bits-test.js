@@ -12,6 +12,16 @@ describe('[MODULE bits.js]', function () {
 		   .to.be.equal(true);
 	       expect(bits.oneStepAway(320, 448)).to.be.equal(true);
 	   });
+
+	it('Includes moves from zero to one piece', function () {
+	    expect(bits.oneStepAway(0, 64)).to.equal(true);
+	});
+
+	it('Rejects states that have more than two moved pieces',
+	   function () {
+	       expect(bits.oneStepAway(0, 192)).to.equal(false);
+	       expect(bits.oneStepAway(448, 14336)).to.equal(false);
+	   });
     });
 
 });

@@ -17,9 +17,11 @@ $(document).ready(function() {
 \*--------------------------------------------------*/
     function initializeGameBoard() {
 	buildGrid($env);
-	$env.socket.emit('request new game');
-	$env.socket.on('new game', function(game) {
-	    $env.currentGame = game;
+	$env.socket.emit('Hello', {user: 'user' + Math.random()});
+	$env.socket.emit('Request New Game',{player: 'x'});
+	$env.socket.on('New Game Response', function(response) {
+	    $env.currentGame = response.game;
+	    console.log(response.game.gid);
 	});
 
 	setTimeout(function() {
@@ -34,7 +36,7 @@ $(document).ready(function() {
  |            Socket.io View Handlers               |
 \*--------------------------------------------------*/
     
-    $env.socket.on('moveResponse', function(data) {
+    $env.socket.on('Move Response', function(data) {
 	if (data.ok) {
 	    $env.currentGame = data.game;
 	    $env.piecesOnBoard++;
@@ -54,6 +56,9 @@ $(document).ready(function() {
 	    createPiece($env, {pieceId: 'player' + $env.piecesOnBoard,
 			       cell: 'home-plate'});
 	}
+
+	console.log(data.o);
+	console.log('winner:', data.winner || 'None');
     });
         
 }); // document.ready
