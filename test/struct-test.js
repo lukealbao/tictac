@@ -50,7 +50,6 @@ describe('[MODULE struct.js]', function () {
 	it('Returns an adjacency list of 0-3 set-bit integers to arrays',
 	   function () {
 	       expect(graph).to.be.a('object');
-	       expect(graph).to.have.property(448);
 	       expect(graph).to.have.property(0);
 	       expect(graph).to.have.property(64);
 	       expect(graph).to.not.have.property(268736);
@@ -70,6 +69,10 @@ describe('[MODULE struct.js]', function () {
 	    expect(graph[0]).to.include.members([16, 32, 1024]);
 	    expect(graph[0]).to.not.include(192);
 	    expect(graph[192]).to.not.include(64);
+	});
+
+	it('Has no exit edges for winning games', function () {
+	    expect(graph[448].length).to.equal(0);
 	});
     });
 

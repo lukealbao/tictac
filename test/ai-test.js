@@ -17,7 +17,7 @@ describe('[MODULE: ai-controller]', function () {
     
     describe('#getMoves()', function() {
 	it('Returns a list of "move, game" objects', function () {
-	    var results = ai.getMoves(winningPlayer, winningGame);
+	    var results = ai.getMoves(checkMatePlayer, checkMateGame);
 	    expect(results).to.be.a('array');
 	    expect(results[0]).to.be.a('object');
 	    expect(results[0]).to.have.property('player');
@@ -95,12 +95,12 @@ describe('[MODULE: ai-controller]', function () {
 
 
     describe('#calculateMove()', function () {
-	it('Returns a winning move at depth 2', function () {
-	    var result2deep = ai.calculateMove(checkMatePlayer,
-					       checkMateGame, 2);
-	    expect(result2deep).to.equal(448);
+	it('Returns a winning move at depth 1', function () {
+	    var result = ai.calculateMove(checkMatePlayer,
+					       checkMateGame, 1);
+	    expect(result).to.equal(448);
 	});
-
+	
 	it('Returns a winning move at depth 3', function () {
 	    var result3deep = ai.calculateMove(checkMatePlayer,
 					       checkMateGame, 3);
@@ -112,12 +112,6 @@ describe('[MODULE: ai-controller]', function () {
 					       checkMateGame, 4);
 	    expect(result4deep).to.equal(448);
 	});
-
-	it('Builds a pretty tree that allows us to see execution',
-	   function () {
-	       ai.alphaBetaSearch(checkMatePlayer, checkMateGame,
-				  3, -Infinity, Infinity, true);
-	   });
 
 	it('Does not return a proven bad move when others are available',
 	   function () {
