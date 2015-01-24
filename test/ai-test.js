@@ -4,8 +4,8 @@ chai.use(require('chai-things'));
 var expect = chai.expect;
 var bits = require('../lib/bits');
 var ai = require('../lib/ai-controller');
-var winningScore = 6; // Three in a row
-var pinnedScore = 0.5; // Two in a row w/ opponent between
+var winningScore = 7; // Three in a row
+var pinnedScore = 1; // Two in a row w/ opponent between
 var attackingScore = 2; // Two in a row w/ nothing betweeen
 var winningPlayer = bits.setFlags([6,7,8]);
 var winningGame = bits.setFlags([6,7,8, 12,17,11]);
@@ -98,19 +98,13 @@ describe('[MODULE: ai-controller]', function () {
 	it('Returns a winning move at depth 1', function () {
 	    var result = ai.calculateMove(checkMatePlayer,
 					       checkMateGame, 1);
-	    expect(result).to.equal(448);
-	});
-	
-	it('Returns a winning move at depth 3', function () {
-	    var result3deep = ai.calculateMove(checkMatePlayer,
-					       checkMateGame, 3);
-	    expect(result3deep).to.equal(448);
+	    expect([448, 270592]).to.contain.members([result]);
 	});
 
 	it('Returns a winning move at depth 4', function () {
 	    var result4deep = ai.calculateMove(checkMatePlayer,
 					       checkMateGame, 4);
-	    expect(result4deep).to.equal(448);
+	    expect([448, 270592]).to.contain.members([result4deep]);
 	});
 
 	it('Does not return a proven bad move when others are available',
