@@ -93,8 +93,51 @@ describe('[MODULE: ai-controller]', function () {
 
     });
 
+    
+/*    describe('#moveSearch2()', function () {
+	it('Scores opening with opposite corner poorly', function () {
+	    var cornerScore = ai.moveSearch2(1 << 24,
+					    (1 << 24) + (1 << 12),
+					    4, 5, -5, true);
+	    var adjacentScore = ai.moveSearch2(1 << 13,
+					      (1 << 13) + (1 << 12),
+					      4, 5, -5, true);
+	    cornerScore.should.be.at.most(adjacentScore);
+	});
+	
+	it('Returns a winning score for a winning game at depth 0',
+	   function () {
+	       var result = ai.moveSearch(winningPlayer,
+					  winningGame, 4,
+					  -Infinity, Infinity, true);
+	       expect(result).to.equal(winningScore);
+	   }); 
+    });*/
+    
+    /*describe('#moveSearch()', function () {
+	it('Scores opening with opposite corner poorly', function () {
+	    var cornerScore = ai.moveSearch(1 << 24,
+						 (1 << 24) + (1 << 12),
+						 4, - Infinity,
+						 Infinity, true);
+	    var adjacentScore = ai.moveSearch(1 << 13,
+						 (1 << 13) + (1 << 12),
+						 4, - Infinity,
+						 Infinity, true);
+	    cornerScore.should.be.at.most(adjacentScore);
+	});
+	
+	it('Returns a winning score for a winning game at depth 0',
+	   function () {
+	       var result = ai.moveSearch(winningPlayer,
+					       winningGame, 4,
+					       -Infinity, Infinity, true);
+	       expect(result).to.equal(winningScore);
+	   });
+    });*/
 
-    describe('#calculateMove()', function () {
+
+   /* describe('#calculateMove()', function () {
 	it('Returns a winning move at depth 1', function () {
 	    var result = ai.calculateMove(checkMatePlayer,
 					       checkMateGame, 1);
@@ -107,21 +150,6 @@ describe('[MODULE: ai-controller]', function () {
 	    expect([448, 270592]).to.contain.members([result4deep]);
 	});
 
-	it('Does not return a proven bad move when others are available',
-	   function () {
-	       var result = ai.calculateMove(0, 1 << 12, 3);
-	       result.should.not.equal(24);
-	   });
-
-	// old MinMax tests
-       it('Returns a winning score for a winning game at depth 0',
-	  function () {
-	      var result = ai.alphaBetaSearch(winningPlayer,
-					      winningGame, 0,
-					      -Infinity, Infinity, true);
-	      expect(result).to.equal(winningScore);
-	  });
-
        it('Returns a winning next move for a checkmate position',
 	  function () {
 	      var result = ai.calculateMove(checkMatePlayer,
@@ -131,6 +159,21 @@ describe('[MODULE: ai-controller]', function () {
 		  .to.include.members([result]);
 	  }
  	 );
+
+	it('Blocks an opponent from winning if possible', function () {
+	    var result = ai.calculateMove(bits.setFlags([12,17,11]),
+					  bits.setFlags([12,17,11, 6,7,13]),
+					  6);
+	    expect(result & 256).to.equal(256);
+	});
+
+	it('Doesn\'t use 24 on depth 4, but it does on depth 3', function() {
+	    var bad = ai.calculateMove(0, 4096, 4);
+	    var good = ai.calculateMove(0, 4096, 3);
+	    expect(bad).to.equal(1 << 24);
+	    expect(good).to.equal(1 << 11);
+	});
+							
 
 	it('Returns moves that don\'t overlap current state', function () {
 	    var game = {x: {player0: 12,
@@ -151,7 +194,7 @@ describe('[MODULE: ai-controller]', function () {
 	    expect(result).to.not.equal(5);
 	});
 	   
-   });
+   });*/
 
     describe('#prepareMove()', function () {
 

@@ -58,7 +58,12 @@ io.sockets.on('connection', function (socket) {
 		} else {
 		    response.ok = true;
 		    response.game = res;
+		    response.game.me = playerChoice;
 		    socket.emit('New Game Response', response);
+		    if (playerChoice === 'o') {
+			io.to(app.connectedUsers.Machine)
+			    .emit('Your Move', response.game);
+		    }		    
 		}
 	    });
 	}
