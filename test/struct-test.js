@@ -7,11 +7,28 @@ var bits = require('../lib/bits');
 
 describe('[MODULE struct.js]', function () {
 
+    describe('boardMask', function () {
+	it('Returns a single value - a mask of a 3x3 board @ index 0',
+	   function () {
+	       expect(struct.boardMask).to.equal(7399);
+	   });
+    });
+
+    describe('stages', function () {
+	it('Returns an array of #boardMasks translated across 5x5',
+	   function () {
+	       expect(struct.stages).to.be.an('array');
+	       expect(struct.stages).to.include.members([14798, 7399]);
+	   });
+    });
+
+    
     describe('attackVectors', function () {
-	it('Returns an array of attack vectors', function () {
-	    expect(struct.attackVectors).to.be.a('array');
-	    struct.attackVectors.should.include(31);
-	});
+	it('Accepts a game score and returns an array of vectors',
+	   function () {
+	       expect(struct.attackVectors(448)).to.be.a('array');
+	       struct.attackVectors(448).should.include(448);
+	   });
     });
 
     describe('edges', function () {

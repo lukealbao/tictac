@@ -85,32 +85,6 @@ io.sockets.on('connection', function (socket) {
     });
 });
 
-
-/*
-io.on('connection', function(socket) {
-
-    // Register AI's socket.id
-    socket.on('register', function(user) {
-	if (user === 'Machine') {
- 	    console.log('Machine registered at', socket.id);
-	    machineSocket = socket.id;
-	}
-    });
-  
-    // Accept requests for moves	
-    socket.on('move', function(request) {
-	console.log('Socket', socket.id, 'requests move',
-		    JSON.stringify(request));
-	dealer.processMoveRequest(request, function(response) {
-	    socket.emit('moveResponse', response);
-	    io.to(response.nextMove).emit('Your Move', response.game);
-	});	
-    });
-    
-    socket.write('hello, you are connected to %id'
-		 .replace('%id', socket.id));
-});
-*/
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
     var err = new Error('Not Found');

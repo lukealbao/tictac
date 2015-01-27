@@ -16,10 +16,9 @@ $(document).ready(function() {
  |               Set up a new Game                  |
 \*--------------------------------------------------*/
     function initializeGameBoard() {
-	var choice = Math.random() > 0.50 ? 'x' : 'o';
 	buildGrid($env);
 	$env.socket.emit('Hello', {user: 'user' + Math.random()});
-	$env.socket.emit('Request New Game',{player: choice});
+	$env.socket.emit('Request New Game',{player: 'x'});
 	$env.socket.on('New Game Response', function(response) {
 	    $env.currentGame = response.game;
 	    console.log(response.game);
