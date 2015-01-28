@@ -70,12 +70,15 @@ io.sockets.on('connection', function (socket) {
     });
 
     socket.on('Move Request', function (request) {
-	console.log(request.player, 'Requests:', request);
 	dealer.processMoveRequest(request, function (err, res) {
+	    var update;
 	    socket.emit('Move Response', err || res);
 	    if (!err) {
+		update = res.game;
+		update.piece = res.piece;
+		update.to = res.to;
 		io.to(app.connectedUsers[res.nextMove])
-		    .emit('Your Move', res.game);
+		    .emit('Your Move', update);
 	    }
 	});
     });

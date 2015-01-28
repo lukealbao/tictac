@@ -152,6 +152,8 @@ describe('[MODULE: app.js]', function () {
 
 	    // Client1 receives the message
 	    client1.on('Your Move', function (game) {
+		expect(game.piece).to.equal('opponent0');
+		expect(game.to).to.equal(12);
 		expect(game.gid).to.equal(gid);
 		done();
 	    });

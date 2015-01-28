@@ -60,7 +60,7 @@ function createPiece ($env, options) {
 
     
     // Register draggable element in $env
-    $env.currentGame[player][pieceId + '-el'] =
+    $env.currentGame[player][pieceId.replace('opponent','player') + '-el'] =
 	Draggable.create('#' + pieceId, {
 	    bounds:$('#stage'),
 	    edgeResistance:0.65,
@@ -113,6 +113,10 @@ function createPiece ($env, options) {
 		  height: $env.cellSize -1,
 		  ease: Elastic.easeOut
 		 });
+    if (pieceId.match('opponent')) {
+	$env.currentGame[$env.opponent()]
+	   [pieceId.replace('opponent', 'player') +'-el'].disable();
+    }
 }
 
 // snapToCell: Object:$env, DOM Element, Function -> $env State change

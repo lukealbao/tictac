@@ -9,7 +9,8 @@ $(document).ready(function() {
 	gridSize: 25, 
 	currentGame: null,
 	piecesOnBoard: 0,
-	me: function() { return this.currentGame.me }
+	me: function() { return this.currentGame.me },
+	opponent: function () {return this.currentGame.opponent}
     }; // $env
 
 /*--------------------------------------------------*\
@@ -37,8 +38,10 @@ $(document).ready(function() {
 \*--------------------------------------------------*/
     
     $env.socket.on('Move Response', function(data) {
+	console.log('move response', data);
 	if (data.ok) {
-	    $env.currentGame = data.game;
+	    $env.currentGame[$env.me()]
+	    [data.piece.replace('opponent','player')] = data.to;
 	    $env.piecesOnBoard++;
 	    console.log('player0', $env.currentGame.x['player0']);
 	}
@@ -51,10 +54,17 @@ $(document).ready(function() {
     });
     
     $env.socket.on('Your Move', function(data) {
-	$env.currentGame = data;
+	$env.currentGame[$env.opponent()][data.piece] = data.to;
 	if ($env.piecesOnBoard < 3) {
 	    createPiece($env, {pieceId: 'player' + $env.piecesOnBoard,
 			       cell: 'home-plate'});
+	}
+
+	if ($env.currentGame[$env.opponent()].piecesOnBoard < 3) {
+	    $env.currentGame[$env.opponent()].piecesOnBoard ++;
+	    createPiece($env, {pieceId: data.piece, cell: data.to});
+	} else {
+	    sendPiece(data.piece, data.to);
 	}
 
 	console.log(data.o);
