@@ -65,7 +65,7 @@ describe('[MODULE: ai-controller]', function () {
 
     describe('#score()', function () {
 
-	it('Returns -6 for a losing state', function () {
+	it('Returns a losing score for a losing state', function () {
 	    var result = ai.score(winningPlayer, winningGame, false);
 	    expect(result).to.be.equal(-winningScore);
 	});
@@ -75,7 +75,7 @@ describe('[MODULE: ai-controller]', function () {
 	    expect(ai.score(0, 32, false)).to.equal(0);
 	});
 
-	it('Returns a 6-score when winning', function () {
+	it('Returns a winning score when winning', function () {
 	    var result = ai.score(winningPlayer, winningGame, true);
 	    expect(result).to.equal(winningScore);
 	});
@@ -101,44 +101,22 @@ describe('[MODULE: ai-controller]', function () {
 
     });
 
-
-    describe('#minMax()', function () {
-
-	it('Always returns a score, so calculateMove can do depths',
-	   function () {
-	       var result = ai.minMax(0, 1 << 24, 0, true);
-	       var result2 = ai.minMax(0, 1 << 24, 3, true);
-	       expect(result).to.be.below(100).and.above(-100);
-	       expect(result2).to.be.below(100).and.above(-100);
-	   });
-
-	it('Returns a winning score for a winning game at depth 0',
-	   function () {
-	       var result = ai.minMax(winningPlayer,
-					  winningGame, 3,
-					  -Infinity, Infinity, true);
-	       expect(result).to.equal(winningScore);
-	   }); 
-	
-    });
-
-    
-    describe('#calculateMove()', function () {
+    describe('#searchRoot()', function () {
 	it('Returns a winning move at depth 1', function () {
-	    var result = ai.calculateMove(checkMatePlayer,
+	    var result = ai.searchRoot(checkMatePlayer,
 					  checkMateGame, 1);
 	    expect([448, 270592]).to.contain.members([result]);
 	});
 
 	it('Returns a winning move at depth 3', function () {
-	    var result3deep = ai.calculateMove(checkMatePlayer,
+	    var result3deep = ai.searchRoot(checkMatePlayer,
 					       checkMateGame, 3);
 	    expect([448, 270592]).to.contain.members([result3deep]);
 	});
 
 	it('Returns a winning next move for a checkmate position',
 	   function () {
-	       var result = ai.calculateMove(checkMatePlayer,
+	       var result = ai.searchRoot(checkMatePlayer,
 					     checkMateGame, 3);
 	       
 	       expect([bits.setFlags([6,7,8]), bits.setFlags([8,13,18])])
@@ -147,7 +125,7 @@ describe('[MODULE: ai-controller]', function () {
  	  );
 
 	it('Blocks a next-move win on search of 1 levels', function () {
-	    var result = ai.calculateMove(bits.setFlags([12,17,11]),
+	    var result = ai.searchRoot(bits.setFlags([12,17,11]),
 					  bits.setFlags([12,17,11, 6,7,13]),
 					  1);
 	    expect(result & 256).to.equal(256);
@@ -166,7 +144,7 @@ describe('[MODULE: ai-controller]', function () {
 			    piecesOnBoard: 2},
 			turn: 'o'
 		       };
-	    var result = ai.calculateMove(game.o.state,
+	    var result = ai.searchRoot(game.o.state,
 					  game.o.state + game.x.state, 3);
 
 	    expect(result).to.not.equal(5);
@@ -176,7 +154,7 @@ describe('[MODULE: ai-controller]', function () {
 
     describe('#prepareMove()', function () {
 
-	it('Transforms a #calculateMove result to a move request object',
+	it('Transforms a #searchRoot result to a move request object',
 	   function () {
 	       var game = {
 		   gid: 'test',
