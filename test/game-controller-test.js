@@ -159,7 +159,7 @@ describe('[MODULE game-controller.js]', function () {
 	       function check (err, res) {
 		   console.log(err);
 		   expect(err).to.equal(null);
-		   //expect(res.game.x.player0).to.equal(6);
+		   expect(res.game.x.player0).to.equal(1 << 6);
 	       }
 	   });
 
