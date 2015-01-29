@@ -41,11 +41,11 @@ function buildGrid ($env) {
 \*----------------------------------------------------------------------*/
 function createPiece ($env, options) {
     var offset = $env.cellSize / 2;
-    var pieceId = options.pieceId;
+    var pieceId = options.pieceId; // player0 || opponent2
     var owner = pieceId.slice(0, -1);
     var coords = cellCoords(options.cell);
     var player = owner === 'player'
-	? $env.currentGame.me : $env.currentGame.opponent;
+	? $env.me() : $env.opponent();
     
     // Create the (invisible) element
     $('<div/>').css({position: 'absolute',
@@ -59,8 +59,8 @@ function createPiece ($env, options) {
 	.prependTo($('#stage'));
 
     
-    // Register draggable element in $env
-    $env.currentGame[player][pieceId.replace('opponent','player') + '-el'] =
+    // Only .player-pieces need to be draggable
+    if (owner === 'player') {
 	Draggable.create('#' + pieceId, {
 	    bounds:$('#stage'),
 	    edgeResistance:0.65,
@@ -97,14 +97,15 @@ function createPiece ($env, options) {
 	    onDragEnd: function(e) {
 		snapToCell.call(this, $env, this._eventTarget);
 	    }
-	})[0]; // Draggable.create()
+	}); // Draggable.create()
+    }
 
     // Set in place
     TweenLite.to($('#' + pieceId), 0,
 		 {x: coords.x + offset,
 		  y: coords.y + offset
 		 });
-	 
+    
     // Animate appearance
     TweenLite.to($('#' + pieceId), 1,
 		 {x: coords.x,
@@ -113,22 +114,19 @@ function createPiece ($env, options) {
 		  height: $env.cellSize -1,
 		  ease: Elastic.easeOut
 		 });
-    if (pieceId.match('opponent')) {
-	$env.currentGame[$env.opponent()]
-	   [pieceId.replace('opponent', 'player') +'-el'].disable();
-    }
+
 }
 
 // snapToCell: Object:$env, DOM Element, Function -> $env State change
 /*----------------------------------------------------------------------*\
- | Called on `.gamePiece.dragEnd`. If called as dragEnd handler, it     |
- | be called with `snapToCell.call` to bind `this`.                     |
- | CSS transform to snap to nearest open `.cell`.                       |
- |                                                                      |
- | The optional third parameter will receive the `registerPiece`        |
- | function. If present, it updates the current game with the piece's   |
- | new state.                                                           |
-\*----------------------------------------------------------------------*/
+  | Called on `.gamePiece.dragEnd`. If called as dragEnd handler, it     |
+  | be called with `snapToCell.call` to bind `this`.                     |
+  | CSS transform to snap to nearest open `.cell`.                       |
+  |                                                                      |
+  | The optional third parameter will receive the `registerPiece`        |
+  | function. If present, it updates the current game with the piece's   |
+  | new state.                                                           |
+  \*----------------------------------------------------------------------*/
 function snapToCell ($env, elem, next) {
     var cells = $env.openCells,
 	i = cells.length,
@@ -171,7 +169,7 @@ function cellCoords(cell) {
     var y = parseInt( cell.css('top') );
     return {x: x, y: y}
 }
-	
+
 function submitMove ($env, piece, to) {
     var request = {gid: $env.currentGame.gid,
 		   player: $env.currentGame.me,
@@ -182,4 +180,4 @@ function submitMove ($env, piece, to) {
     
     $env.socket.emit('Move Request', request);
 }
-	
+

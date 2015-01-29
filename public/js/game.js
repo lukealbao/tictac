@@ -28,7 +28,7 @@ $(document).ready(function() {
 	setTimeout(function() {
 	    createPiece($env, {pieceId: 'player' + $env.piecesOnBoard,
 			       cell: 'home-plate'});
-	}, 2500);
+	}, 1000);
     }
     initializeGameBoard();
    
@@ -56,8 +56,10 @@ $(document).ready(function() {
     $env.socket.on('Your Move', function(data) {
 	$env.currentGame[$env.opponent()][data.piece] = data.to;
 	if ($env.piecesOnBoard < 3) {
-	    createPiece($env, {pieceId: 'player' + $env.piecesOnBoard,
-			       cell: 'home-plate'});
+	    setTimeout(function () {
+		createPiece($env, {pieceId: 'player' + $env.piecesOnBoard,
+				   cell: 'home-plate'});
+	    }, 500);
 	}
 
 	if ($env.currentGame[$env.opponent()].piecesOnBoard < 3) {
