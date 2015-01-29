@@ -124,7 +124,8 @@ describe('[MODULE game-controller.js]', function () {
 		gid: 'winning',
 		x: {pid: 'x', player1: 1 << 12, state: 64 + 4096 + 128},
 		o: {pid: 'o', player1: 1 << 13, state: 141312}, // 11, 13, 18
-		turn: 'x'
+		turn: 'x',
+		active: true
 	    };
 
 	    var winningRequest = {
@@ -140,6 +141,43 @@ describe('[MODULE game-controller.js]', function () {
 	    }
 	});
 
+	it('Transforms the board when an accepted move lands on an edge',
+	   function () {
+	       var request = {player: 'x', piece: 'player0',
+			      from: 1 << 25, to: 0
+			     };
+	       var game = {
+		   active: true,
+		   gid: 'test2',
+		   x: {pid: 'x', player0: 1 << 25, state: 0},
+		   o: {pid: 'o', player0: 1 << 6, state: 1 << 6},
+		   turn: 'x'
+	       };
+
+	       controller.submitMove(game, request, check);
+	       
+	       function check (err, res) {
+		   console.log(err);
+		   expect(err).to.equal(null);
+		   //expect(res.game.x.player0).to.equal(6);
+	       }
+	   });
+
+    });
+
+    describe('#reorientBoard()', function () {
+	it('Shifts all states one row up when a pieces on the bottom',
+	   function () {
+	       var game = {
+		   x: {pid: 'x', player0: 1 << 7,
+		       player1: 1 << 8, state: (1 << 7) + (1 << 8)},
+		   o: {pid: 'o', player0: 1 << 6,
+		       player1: 1 << 2, state: (1 << 6) + (1 << 2)}
+	       };
+	       var result = controller.reorientBoard(game);
+	       expect(result.x.player1).to.equal(1 << 13);
+	       expect(result.o.state).to.equal(68 << 5);
+	   });
     });
 
     describe('#processMoveRequest()', function () {
