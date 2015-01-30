@@ -44,8 +44,7 @@ function createPiece ($env, options) {
     var pieceId = options.pieceId; // player0 || opponent2
     var owner = pieceId.slice(0, -1);
     var coords = cellCoords(options.cell);
-    var player = owner === 'player'
-	? $env.me() : $env.opponent();
+    var pieceClass = owner === $env.me ? 'player' : 'opponent';
     
     // Create the (invisible) element
     $('<div/>').css({position: 'absolute',
@@ -54,13 +53,13 @@ function createPiece ($env, options) {
 		     height: 0,
 		     top: 0,
 		     left: 0})
-	.attr({class: owner + '-piece',
+	.attr({class: pieceClass + '-piece',
 	       id: pieceId})
 	.prependTo($('#stage'));
 
     
     // Only .player-pieces need to be draggable
-    if (owner === 'player') {
+    if (owner === $env.me) {
 	Draggable.create('#' + pieceId, {
 	    bounds:$('#stage'),
 	    edgeResistance:0.65,
@@ -78,12 +77,12 @@ function createPiece ($env, options) {
 	    },
 	    onClick: function (e) {
 		// Fire request to server
-		var move = $env.currentGame.pendingMoves.pop();
+		var move = $env.pendingMoves.pop();
 		submitMove($env, move[0], move[1]);
 	    },
 	    onDragStart: function(e) {
 		// Undo any unsaved moves
-		var unsaved = $env.currentGame.pendingMoves.pop();
+		var unsaved = $env.pendingMoves.pop();
 		var piece;
 		
 		if (unsaved && unsaved[0] !== e.target.id) {
@@ -137,7 +136,7 @@ function snapToCell ($env, elem, next) {
 	if (this.hitTest(cells[i], '26%')) {
 	    targetCell = cells[i];
 
-	    $env.currentGame.pendingMoves
+	    $env.pendingMoves
 		.push([
 		    pieceId,
 		    (targetCell.getAttribute('idx') | 0)

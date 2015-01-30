@@ -136,7 +136,7 @@ describe('[MODULE game-controller.js]', function () {
 	    controller.submitMove(winningGame, winningRequest, check);
 	    function check (err, res) {
 		expect(err).to.equal(null);
-		expect(res.game.winner).to.equal('x');
+		expect(res.winner).to.equal('x');
 		done();
 	    }
 	});
@@ -217,8 +217,8 @@ describe('[MODULE game-controller.js]', function () {
 		expect(err).to.equal(null);
 		console.log(err);
 		expect(res.ok).to.equal(true);
-		expect(res.game.turn).to.equal('o');
-		expect(res.game.x[request.piece]).to.equal(request.to);
+		expect(res.moves).to.be.an('object');
+		expect(Object.keys(res.moves).length).to.equal(0);
 		done();
 	    }
 	});

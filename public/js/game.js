@@ -5,13 +5,13 @@ $(document).ready(function() {
 \*--------------------------------------------------*/
     var $env = {
 	socket: io(),
-	cellSize: 150, // 100px to a side
+	cellSize: 100, // 100px to a side
 	gridSize: 25, 
 	currentGame: null,
 	playerPieceCount: 0,
 	opponentPieceCount: 0,
-	me: function() { return this.currentGame.me },
-	opponent: function () {return this.currentGame.opponent}
+	pendingMovs: [],
+	me: undefined,
     }; // $env
 
 /*--------------------------------------------------*\
@@ -26,7 +26,7 @@ $(document).ready(function() {
 	});
 
 	setTimeout(function() {
-	    createPiece($env, {pieceId: 'player' + $env.playerPieceCount,
+	    createPiece($env, {pieceId: 'x' + $env.playerPieceCount,
 			       cell: 'home-plate'});
 	}, 1000);
     }
@@ -52,7 +52,7 @@ $(document).ready(function() {
     $env.socket.on('Your Move', function(data) {
 	if ($env.playerPieceCount < 3) {
 	    setTimeout(function () {
-		createPiece($env, {pieceId: 'player' + $env.playerPieceCount,
+		createPiece($env, {pieceId: 'x' + $env.playerPieceCount,
 				   cell: 'home-plate'});
 	    }, 500);
 	}
