@@ -27,14 +27,14 @@ body {
 }
 .cell {
     position: absolute;
-    border: 1px solid #ababab;
+ //   border: 1px solid #ababab;
 }
 #gutter {
     position: relative;
     top: 500px;
     z-index: -99999;
 }
-div[idx=home-plate] {
+div[idx="33554432"] {
     position: absolute;
     top: 510px;
     left: 10px;

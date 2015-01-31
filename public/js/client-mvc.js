@@ -41,11 +41,11 @@ function buildGrid ($env) {
 \*----------------------------------------------------------------------*/
 function createPiece ($env, options) {
     var offset = $env.cellSize / 2;
-    var pieceId = options.pieceId; // player0 || opponent2
+    var pieceId = options.pieceId; // x0 || o2, etc.
     var owner = pieceId.slice(0, -1);
     var coords = cellCoords(options.cell);
     var pieceClass = owner === $env.me ? 'player' : 'opponent';
-    
+
     // Create the (invisible) element
     $('<div/>').css({position: 'absolute',
 		     'z-index': 1,
@@ -54,7 +54,8 @@ function createPiece ($env, options) {
 		     top: 0,
 		     left: 0})
 	.attr({class: pieceClass + '-piece',
-	       id: pieceId})
+	       id: pieceId,
+	       'current-idx': 1 << 25})
 	.prependTo($('#stage'));
 
     
@@ -88,9 +89,7 @@ function createPiece ($env, options) {
 		if (unsaved && unsaved[0] !== e.target.id) {
 		    piece = unsaved[0];
 		    console.log('unsaved', unsaved);
-		    console.log('index', $env.currentGame[$env.me()][piece]);
-		    sendPiece(piece,
-			      $env.currentGame[$env.me()][piece]);
+		    sendPiece(piece, $('#'+piece).attr('current-idx'));
 		}
 	    },
 	    onDragEnd: function(e) {
@@ -126,7 +125,7 @@ function createPiece ($env, options) {
   | function. If present, it updates the current game with the piece's   |
   | new state.                                                           |
   \*----------------------------------------------------------------------*/
-function snapToCell ($env, elem, next) {
+function snapToCell ($env, elem) {
     var cells = $env.openCells,
 	i = cells.length,
 	pieceId = elem.id,
@@ -141,6 +140,8 @@ function snapToCell ($env, elem, next) {
 		    pieceId,
 		    (targetCell.getAttribute('idx') | 0)
 		]);
+	    console.log('Pushed', $env.pendingMoves[0]);
+	    console.log('pendingMoves length:', $env.pendingMoves.length);
 	    
 	    // Snap to grid
 	    TweenLite.to(elem, 0.5, {
@@ -170,13 +171,14 @@ function cellCoords(cell) {
 }
 
 function submitMove ($env, piece, to) {
-    var request = {gid: $env.currentGame.gid,
-		   player: $env.currentGame.me,
+    console.log(piece, '!!!', $('#'+piece));
+    var request = {gid: $env.currentGame,
+		   player: $env.me,
 		   piece: piece,
-		   from: $env.currentGame[$env.currentGame.me][piece],
+		   from: parseInt($('#'+piece).attr('current-idx')),
 		   to: to
 		  };
-    
+    $(piece).attr('current-idx', to);    
     $env.socket.emit('Move Request', request);
 }
 

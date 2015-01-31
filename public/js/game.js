@@ -10,8 +10,9 @@ $(document).ready(function() {
 	currentGame: null,
 	playerPieceCount: 0,
 	opponentPieceCount: 0,
-	pendingMovs: [],
+	pendingMoves: [],
 	me: undefined,
+	opponent: undefined
     }; // $env
 
 /*--------------------------------------------------*\
@@ -19,16 +20,20 @@ $(document).ready(function() {
 \*--------------------------------------------------*/
     function initializeGameBoard() {
 	buildGrid($env);
+	var choice = Math.random() > 0.5 ? 'x' : 'o';
 	$env.socket.emit('Hello', {user: 'user' + Math.random()});
-	$env.socket.emit('Request New Game',{player: 'x'});
+	$env.socket.emit('Request New Game',{player: choice});
 	$env.socket.on('New Game Response', function(response) {
+	    console.log('New Game', response);
 	    $env.currentGame = response.gid;
+	    $env.me = response.player;
+	    $env.opponent = $env.me === 'x' ? 'o' : 'x';
 	});
-
+/*
 	setTimeout(function() {
-	    createPiece($env, {pieceId: 'x' + $env.playerPieceCount,
+	    createPiece($env, {pieceId: $env.me + $env.playerPieceCount,
 			       cell: 'home-plate'});
-	}, 1000);
+	}, 1000); */
     }
     initializeGameBoard();
    
@@ -42,7 +47,11 @@ $(document).ready(function() {
 	if (data.ok) {
 	    $env.playerPieceCount < 3 ? $env.playerPieceCount++ : null;
 	}
-	if (data.winning) alert('You win!!');
+	for (piece in data.moves) {
+	    sendPiece(piece, data.moves[piece]);
+	    $('#'+piece).attr('current-idx', data.moves[piece]);
+	}
+	if (data.winner) alert('You win!!');
     });
     
     $env.socket.on('message', function(data) {
@@ -50,19 +59,32 @@ $(document).ready(function() {
     });
     
     $env.socket.on('Your Move', function(data) {
+
+	// Create Player piece if needed
 	if ($env.playerPieceCount < 3) {
 	    setTimeout(function () {
-		createPiece($env, {pieceId: 'x' + $env.playerPieceCount,
-				   cell: 'home-plate'});
+		createPiece($env, {pieceId: $env.me + $env.playerPieceCount,
+				   cell: '33554432'});
 	    }, 500);
 	}
 
-	if ($env.opponentPieceCount < 3) {
-	    $env.opponentPieceCount ++;
-	    createPiece($env, {pieceId: data.piece, cell: data.to});
-	} else {
-	    sendPiece(data.piece, data.to);
+	// Place new moves on board
+	for (piece in data.moves) {
+
+	    // Creating pieces if needed
+	    if (piece[0] === $env.opponent
+		&& $('#' + piece)[0] === undefined) {
+		$env.opponentPieceCount ++;
+		createPiece($env, {pieceId: piece, cell: data.moves[piece]});
+	    } else {
+		sendPiece(piece, data.moves[piece]);
+	    }
+
+	    $('#'+piece).attr('current-idx', data.moves[piece]);
 	}
+	setTimeout( function () {
+	    if (data.winner) {alert('You Lose!')};
+	}, 750);
     });
         
 }); // document.ready
