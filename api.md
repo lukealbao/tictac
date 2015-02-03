@@ -12,10 +12,10 @@
 <li><a href="#sec-2">2. <span class="todo TODO">TODO</span> Fixes</a>
 <ul>
 <li><a href="#sec-2-1">2.1. <span class="todo TODO">TODO</span> Animation Z-index</a></li>
-<li><a href="#sec-2-2">2.2. <span class="todo TODO">TODO</span> Send current game state with move request errors</a></li>
-<li><a href="#sec-2-3">2.3. <span class="todo TODO">TODO</span> Put AI into child processes</a></li>
-<li><a href="#sec-2-4">2.4. <span class="todo TODO">TODO</span> Stagger move animations</a></li>
-<li><a href="#sec-2-5">2.5. <span class="todo TODO">TODO</span> First Move Problem</a></li>
+<li><a href="#sec-2-2">2.2. <span class="todo TODO">TODO</span> Put AI into child processes</a></li>
+<li><a href="#sec-2-3">2.3. <span class="todo TODO">TODO</span> First Move Problem</a></li>
+<li><a href="#sec-2-4">2.4. <span class="done DONE">DONE</span> Stagger move animations</a></li>
+<li><a href="#sec-2-5">2.5. <span class="done DONE">DONE</span> Send current game state with move request errors</a></li>
 <li><a href="#sec-2-6">2.6. <span class="done DONE">DONE</span> Pieces becoming unmovable</a></li>
 <li><a href="#sec-2-7">2.7. <span class="done DONE">DONE</span> pendingMoves() doesn't work as expected.</a></li>
 </ul>
@@ -24,14 +24,12 @@
 </div>
 </div>
 
-\#-\*- mode: org -\*-
-
 # Server Accepts These Socket Events<a id="sec-1" name="sec-1"></a>
 
 ## Request New Game<a id="sec-1-1" name="sec-1-1"></a>
 
 -   *@param* Request Object
-    -   **opponent (optional):** the uid of an opponent. If ommitted, 
+    -   **opponent (optional):** the uid of an opponent. If ommitted,
         defaults to 'Machine'.
     -   **player (optional):** Either 'x' or 'o'. Defaults to 'x'.
 
@@ -44,7 +42,7 @@
 ## Hello<a id="sec-1-2" name="sec-1-2"></a>
 
 -   *@param* Request Object
-    -   **user:** a unique id to register the user. Currently 
+    -   **user:** a unique id to register the user. Currently
         generatedby a random number.
 
 -   *@return* null
@@ -87,35 +85,43 @@
 -   **Problem:** A moving piece is sent underneath other pieces.
 -   Look to Greensock API for z-index while doing \`#sendPiece()\`.
 
-## TODO Send current game state with move request errors<a id="sec-2-2" name="sec-2-2"></a>
-
--   **Problem:** Certain times, AI appears to move, and it is the player's turn; the player takes a move, but most spaces are occupied. This will allow debugging.
-
-## TODO Put AI into child processes<a id="sec-2-3" name="sec-2-3"></a>
+## TODO Put AI into child processes<a id="sec-2-2" name="sec-2-2"></a>
 
 -   **Problem:** Server becomes unresponsive when searching for a move.
 -   Spawn child processes for AI workers.
 -   Create a queue for round-robining the workers.
 
-## TODO Stagger move animations<a id="sec-2-4" name="sec-2-4"></a>
-
--   **Problem:** Animations happen all at once and is disorienting in a bad way.
--   Look to: reforming the \`Move Response\` API so that a single move is in a separate field from the reorientation moves. Then use two different timeouts on the client side.
-
-## TODO First Move Problem<a id="sec-2-5" name="sec-2-5"></a>
+## TODO First Move Problem<a id="sec-2-3" name="sec-2-3"></a>
 
 -   **Problem:** Always chooses an opposite corner.
 -   Look to the scoring mechanism.
 
+## DONE Stagger move animations<a id="sec-2-4" name="sec-2-4"></a>
+
+-   **Problem:** Animations happen all at once and is disorienting in a
+    bad way.
+-   Look to: reforming the \`Move Response\` API so that a single move
+    is in a separate field from the reorientation moves. Then use two
+    different timeouts on the client side.
+
+## DONE Send current game state with move request errors<a id="sec-2-5" name="sec-2-5"></a>
+
+-   **Problem:** Certain times, AI appears to move, and it is the
+    player's turn; the player takes a move, but most spaces
+    are occupied. This will allow debugging.
+
 ## DONE Pieces becoming unmovable<a id="sec-2-6" name="sec-2-6"></a>
 
--   **Problem:** Unpredictably, a piece is no longer draggable, and other moves return as out of bounds.
--   Look to losing consistency between the model and the idxs of DOM pieces.
+-   **Problem:** Unpredictably, a piece is no longer draggable, and
+    other moves return as out of bounds.
+-   Look to losing consistency between the model and the idxs of DOM
+    pieces.
 -   Look to the \`$env.pendingMoves\` issue.
 -   **Solution:** Added hash to jQuery call in #sendMove
 
 ## DONE pendingMoves() doesn't work as expected.<a id="sec-2-7" name="sec-2-7"></a>
 
--   **Problem:** When moving another piece before submitting a move, the first is not sent back, as it should be.
+-   **Problem:** When moving another piece before submitting a move, the
+    first is not sent back, as it should be.
 -   This probably affects the prior todo.
 -   **Solution:** Added hash to jQuery call in #sendMove
