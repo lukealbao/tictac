@@ -43,23 +43,31 @@ $(document).ready(function() {
 \*--------------------------------------------------*/
     
     $env.socket.on('Move Response', function(data) {
-	console.log('move response', data);
+        console.log('You moved.',data);// data.newMove, data.request.to);
+        //console.log('x is', data.game.x);
+        //console.log('and', 'o is', data.game.o)
+//	console.log('move response', data);
+        //console.log('\n');
 	if (data.ok) {
 	    $env.playerPieceCount < 3 ? $env.playerPieceCount++ : null;
 	}
-	for (piece in data.moves) {
-	    sendPiece(piece, data.moves[piece]);
-	    $('#'+piece).attr('current-idx', data.moves[piece]);
+	for (piece in data.corrections) {
+	    $('#'+piece).attr('current-idx', data.corrections[piece]);
+            sendPiece(piece, data.corrections[piece]);
 	}
 	if (data.winner) alert('You win!!');
     });
     
     $env.socket.on('message', function(data) {
-	console.log(data);
+	//console.log(data);
     });
     
     $env.socket.on('Your Move', function(data) {
 
+        console.log('Machine moved.', data);//data.newMove, data.request.to);
+        //console.log('x is', data.game.x);
+        //console.log('and', 'o is', data.game.o)
+        console.log('\n');
 	// Create Player piece if needed
 	if ($env.playerPieceCount < 3) {
 	    setTimeout(function () {
@@ -68,20 +76,25 @@ $(document).ready(function() {
 	    }, 500);
 	}
 
-	// Place new moves on board
-	for (piece in data.moves) {
-
-	    // Creating pieces if needed
-	    if (piece[0] === $env.opponent
-		&& $('#' + piece)[0] === undefined) {
-		$env.opponentPieceCount ++;
-		createPiece($env, {pieceId: piece, cell: data.moves[piece]});
-	    } else {
-		sendPiece(piece, data.moves[piece]);
+        // The new move
+        setTimeout(function () {
+            if (data.newMove.piece[0] === $env.opponent
+                && $('#' + data.newMove.piece).length === 0) {
+                $env.opponentPieceCount ++;
+                createPiece($env, {pieceId: data.newMove.piece,
+                                   cell: data.newMove.to});
+            } else {
+	        sendPiece(data.newMove.piece, data.newMove.to);
 	    }
+        }, 500);
 
-	    $('#'+piece).attr('current-idx', data.moves[piece]);
-	}
+	// Corrections and reorientations
+        setTimeout(function () {
+	    for (piece in data.corrections) {
+	        $('#'+piece).attr('current-idx', data.corrections[piece]);
+                sendPiece(piece, data.corrections[piece]);
+	    }
+        }, 1050);
 	setTimeout( function () {
 	    if (data.winner) {alert('You Lose!')};
 	}, 750);

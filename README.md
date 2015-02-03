@@ -35,7 +35,7 @@ repo:
 ## General structure
 This game runs on Node via Express.js. It accepts HTTP requests and
 populates the board with basic DOM elements, which are animated with
-GreenSock. All gameplay is then handled via Socket.io events. Game
+[GreenSock](http://www.greensock.com). All gameplay is then handled via Socket.io events. Game
 state is housed in Redis. The current iteration only allows playing
 against the AI, but further editions will incorporate human-to-human
 playing and the ability to have multiple games running.
@@ -61,7 +61,7 @@ This correspondence of cell-index to binary flag is crucial to
 understanding anything in this repo.
 
 **I've chosen to map index-0 to the bottom right of the board. The
- numbering goes up by one as you move left-to-right. The next index
+ numbering goes up by one as you move right-to-left. The next index
  after hitting the left edge is the right edge (rather than the cell
  directly above).**
 
@@ -94,7 +94,7 @@ module. Don't be scurred. Combinatorial fun to be had here.
 
 ### `./lib/ai-controller`
 The AI connects to the app over a Socket.io connection, just like a
-real player. It uses a form of the [Minimax
+human client. It uses a form of the [Minimax
 algorithm](http://en.wikipedia.org/wiki/Minimax) to search through all
 available moves and find the best one. The `searchRoot` function is,
 as might be deduced, the root function of searching for a move. It

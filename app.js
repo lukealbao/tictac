@@ -76,7 +76,7 @@ io.sockets.on('connection', function (socket) {
 	    console.log(request.player,'Requested a move');
 	    var update = {};
 	    socket.emit('Move Response', err || res);
-	    if (!err && res.active) {
+	    if (!err) {
 		io.to(app.connectedUsers[res.nextMove])
 		    .emit('Your Move', res);
 	    }

@@ -160,7 +160,6 @@ function sendPiece (elem, index, offset) {
     var x = parseInt( cell.css('left') ) + offset;
     var y = parseInt( cell.css('top') ) + offset;
     TweenLite.to($('#' + elem), 1, {x: x, y: y, ease: Power3.easeInOut});
-    console.log('SendPiece:',elem, index);
 }
 
 function cellCoords(cell) {
@@ -171,14 +170,15 @@ function cellCoords(cell) {
 }
 
 function submitMove ($env, piece, to) {
-    console.log(piece, '!!!', $('#'+piece));
+    console.log('sending from client', parseInt($('#'+piece).attr('current-idx')))
+    console.log('to', to);
     var request = {gid: $env.currentGame,
 		   player: $env.me,
 		   piece: piece,
 		   from: parseInt($('#'+piece).attr('current-idx')),
 		   to: to
 		  };
-    $(piece).attr('current-idx', to);    
+    $('#' + piece).attr('current-idx', to);    
     $env.socket.emit('Move Request', request);
 }
 
