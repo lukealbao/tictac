@@ -44,10 +44,6 @@ $(document).ready(function() {
     
     $env.socket.on('Move Response', function(data) {
         console.log('You moved.',data);// data.newMove, data.request.to);
-        //console.log('x is', data.game.x);
-        //console.log('and', 'o is', data.game.o)
-//	console.log('move response', data);
-        //console.log('\n');
 	if (data.ok) {
 	    $env.playerPieceCount < 3 ? $env.playerPieceCount++ : null;
 	}
@@ -65,8 +61,6 @@ $(document).ready(function() {
     $env.socket.on('Your Move', function(data) {
 
         console.log('Machine moved.', data);//data.newMove, data.request.to);
-        //console.log('x is', data.game.x);
-        //console.log('and', 'o is', data.game.o)
         console.log('\n');
 	// Create Player piece if needed
 	if ($env.playerPieceCount < 3) {

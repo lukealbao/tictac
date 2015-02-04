@@ -25,7 +25,6 @@ I don't recall where I learned this game, but the original was played
 with sugar packets while waiting for food at a restaurant. I've always
 thought it was super cool.
 
-http://ec2-54-88-138-145.compute-1.amazonaws.com:4040/
 
 ## Why is it here?
 I intend to put this up live for people to play. The first version
