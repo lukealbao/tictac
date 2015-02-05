@@ -10,6 +10,7 @@ var logger = require('morgan');
 var express = require('express');
 var app = express();
 var config = require('./config')[process.env.NODE_ENV || 'production'];
+console.log(config);
 var http = require('http').Server(app);
 var server = http.listen(config.port);
 var io = require('socket.io')(server);
