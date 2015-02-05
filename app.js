@@ -9,12 +9,11 @@ var logger = require('morgan');
 // App Server
 var express = require('express');
 var app = express();
-var config = require('./app-config');
+var config = require('./config')[process.env.NODE_ENV || 'production'];
 var http = require('http').Server(app);
-var server = http.listen(3030);
+var server = http.listen(config.port);
 var io = require('socket.io')(server);
 var debug = require('debug')(app);
-app.set('view engine', 'jade');
 
 // Game Controller
 var GameController = require('./lib/game-controller');
