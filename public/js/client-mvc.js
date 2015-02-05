@@ -117,14 +117,14 @@ function createPiece ($env, options) {
 
 // snapToCell: Object:$env, DOM Element, Function -> $env State change
 /*----------------------------------------------------------------------*\
-  | Called on `.gamePiece.dragEnd`. If called as dragEnd handler, it     |
-  | be called with `snapToCell.call` to bind `this`.                     |
-  | CSS transform to snap to nearest open `.cell`.                       |
-  |                                                                      |
-  | The optional third parameter will receive the `registerPiece`        |
-  | function. If present, it updates the current game with the piece's   |
-  | new state.                                                           |
-  \*----------------------------------------------------------------------*/
+ | Called on `.gamePiece.dragEnd`. If called as dragEnd handler, it     |
+ | be called with `snapToCell.call` to bind `this`.                     |
+ | CSS transform to snap to nearest open `.cell`.                       |
+ |                                                                      |
+ | The optional third parameter will receive the `registerPiece`        |
+ | function. If present, it updates the current game with the piece's   |
+ | new state.                                                           |
+\*----------------------------------------------------------------------*/
 function snapToCell ($env, elem) {
     var cells = $env.openCells,
 	i = cells.length,
