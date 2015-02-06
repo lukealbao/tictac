@@ -62,7 +62,6 @@ io.sockets.on('connection', function (socket) {
 		    response.player = playerChoice;
 		    
 		    socket.emit('New Game Response', response);
-		    console.log(app.connectedUsers, player1, "!!!!!!!!");
 		    io.to(app.connectedUsers[player1])
 			.emit('Your Move', {game: res});
 		    
@@ -73,7 +72,6 @@ io.sockets.on('connection', function (socket) {
 
     socket.on('Move Request', function (request) {
 	dealer.processMoveRequest(request, function (err, res) {
-	    console.log(request.player,'Requested a move');
 	    var update = {};
 	    socket.emit('Move Response', err || res);
 	    if (!err) {

@@ -93,7 +93,7 @@ describe('[MODULE: app.js]', function () {
 		var request = {
 		    gid: data.gid,
 		    player: 'x',
-		    piece: 'player2',
+		    piece: 'x2',
 		    from: 1 << 25,
 		    to: 12
 		};

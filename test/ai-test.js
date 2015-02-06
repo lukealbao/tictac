@@ -132,14 +132,14 @@ describe('[MODULE: ai-controller]', function () {
 	});
 
 	it('Returns moves that don\'t overlap current state', function () {
-	    var game = {x: {player0: 12,
-			    player1: 10,
-			    player2: 6,
+	    var game = {x: {x0: 12,
+			    x1: 10,
+			    x2: 6,
 			    state: bits.setFlags([12,10,6]),
 			    piecesOnBoard: 3},
-			o: {player0: 0,
-			    player1: 1,
-			    player2: 1 << 25,
+			o: {o0: 0,
+			    o1: 1,
+			    o2: 1 << 25,
 			    state: 3,
 			    piecesOnBoard: 2},
 			turn: 'o'
