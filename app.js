@@ -15,6 +15,7 @@ var http = require('http').Server(app);
 var server = http.listen(config.port);
 var io = require('socket.io')(server);
 var debug = require('debug')(app);
+app.set('view-engine', 'jade');
 
 // Game Controller
 var GameController = require('./lib/game-controller');
