@@ -1,18 +1,12 @@
 {
     "development": {
-	"port": "3030",
-	"redis-flag": "",
-	"socket.io-flag": ""
-    },
-
-    "test": {
-	"port": "3030",
+	"port": 3030,
 	"redis-flag": "",
 	"socket.io-flag": ""
     },
 
     "production": {
-	"port": "80",
+	"port": 3030,
 	"redis-flag": "",
 	"socket.io-flag": ""
     }
