@@ -65,10 +65,8 @@ describe('[MODULE: app.js]', function () {
 	    
 	    var client2 = io.connect(url, options);
 	    client2.once('New Game Response', function (data) {
-		var expectedKeys = ['x', 'o', 'gid', 'pendingMoves', 'turn',
-				    'winner', 'active', 'history', 'me'];
-		expect(data.game).to.include.keys(expectedKeys);
-		expect(data.game.x.pid).to.be.equal('test user2');
+		expect(data.gid).to.be.a('string');
+                expect(data.player).to.equal('x');
 		expect(data.ok).to.equal(true);
 		expect(data.error).to.equal(undefined);
 		done();
@@ -76,7 +74,8 @@ describe('[MODULE: app.js]', function () {
 
 	    client2.on('connect', function () {
 		client2.emit('Hello', {user: 'test user2'});
-		client2.emit('Request New Game', 'x');
+		client2.emit('Request New Game',
+                             {player: 'x', opponent: 'my-friend'});
 	    });
 	});
 
@@ -92,13 +91,13 @@ describe('[MODULE: app.js]', function () {
 	    
 	    client3.once('New Game Response', function (data) {
 		var request = {
-		    gid: data.game.gid,
+		    gid: data.gid,
 		    player: 'x',
 		    piece: 'player2',
 		    from: 1 << 25,
 		    to: 12
 		};
-		expect(data.game.gid).to.be.a('string');
+		expect(data.gid).to.be.a('string');
 		client3.emit('Move Request', request);
 	    });
 
@@ -131,14 +130,14 @@ describe('[MODULE: app.js]', function () {
 	    });
 	    
 	    client2.on('New Game Response', function (data) {
-		gid = data.game.gid
+		gid = data.gid
 		expect(data.error).to.equal(undefined);
 		client2.emit('Move Request',
 			     {gid: gid,
 			      player: 'x',
 			      from: 1 << 25,
 			      to: 12,
-			      piece: 'player0'
+			      piece: 'x0'
 			     });
 	    });
 
@@ -151,10 +150,10 @@ describe('[MODULE: app.js]', function () {
 	    });
 
 	    // Client1 receives the message
-	    client1.on('Your Move', function (game) {
-		expect(game.piece).to.equal('opponent0');
-		expect(game.to).to.equal(12);
-		expect(game.gid).to.equal(gid);
+	    client1.on('Your Move', function (response) {
+		expect(response.newMove.piece).to.equal('x0');
+		expect(response.newMove.to).to.equal(12);
+		expect(response.game.gid).to.equal(gid);
 		done();
 	    });
 	});

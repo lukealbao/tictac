@@ -22,28 +22,34 @@
      - player :: The requesting player. Either 'x' or 'o'.
      - from :: The current index of the moving piece.
      - to :: The index requested of the moving piece.
-     - piece :: The DOM ID of the piece. E.g., 'player0'.
+     - piece :: The DOM ID of the piece. E.g., 'x0'.
 
    + /@return/ Response Object - sent to requester
      - ok :: Boolean.
+     - TODO active :: REMOVE -- duplicate of game object.
+     - game :: Object. Full representation.
      - error :: If there is one.
      - errReason :: If there is one.
-     - winner :: Null,'x', or 'o'.
+     - TODO winner :: null,'x', or 'o'. REMOVE DUplicate
      - request :: Ce qui est arrivee comme l'objet de la requete.
-     - moves :: A map of DOM ids of elements to their new indexes.
-     - nextMove :: 'x' or 'o', whoever's turn it is.
+     - newMove :: an object, {piece DOM ID : new_index}
+     - nextMove :: the uid for the next player's move
+     - corrections :: Object mapping DOM ids to new indexes.
      - x :: The state of all of x's pieces. Used by AI.
      - o :: The state of all of o's pieces. Used by AI.
 
      
    + /@return/ *Event: 'Your Move'* - Response object sent to opponent
      - ok :: Boolean.
+     - TODO active :: REMOVE -- duplicate of game object.
+     - game :: Object. Full representation.
      - error :: If there is one.
      - errReason :: If there is one.
-     - winner :: Null,'x', or 'o'.
+     - TODO winner :: null,'x', or 'o'. REMOVE DUplicate
      - request :: Ce qui est arrivee comme l'objet de la requete.
-     - moves :: A map of DOM ids of elements to their new indexes.
-     - nextMove :: 'x' or 'o', whoever's turn it is.
+     - newMove :: an object, {piece DOM ID : new_index}
+     - nextMove :: the uid for the next player's move
+     - corrections :: Object mapping DOM ids to new indexes.
      - x :: The state of all of x's pieces. Used by AI.
      - o :: The state of all of o's pieces. Used by AI.
 
