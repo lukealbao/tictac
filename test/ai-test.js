@@ -158,31 +158,33 @@ describe('[MODULE: ai-controller]', function () {
 	   function () {
 	       var game = {
 		   gid: 'test',
-		   o: {player0: 1, player1: 1 << 25,
-		       player2: 1 << 25, state: 2, piecesOnBoard: 1}
+                   me: 'o',
+		   o: {o0: 1, o1: 1 << 25,
+		       o2: 1 << 25, state: 2, piecesOnBoard: 1}
 	       };
-	    
-	       var bestMove = 3;
-	       var expectedResult = {
-		   gid: 'test', player: 'o',
-		   piece: 'player1', from: 1 << 25, to: 0
-	       };
+	     
+	     var bestMove = 3;
+	     var expectedResult = {
+	       gid: 'test', player: 'o',
+	       piece: 'o1', from: 1 << 25, to: 0
+	     };
 
-	       expect(ai.prepareMove(game, bestMove))
-		      .to.deep.equal(expectedResult);
+	     expect(ai.prepareMove(game, bestMove))
+	     .to.deep.equal(expectedResult);
 	   });
 
-	it('Works when there are three pieces on the board', function () {
-	    var game = {
-		gid: 'test',
-		o: {player0: 0, player1: 1, player2: 5,
+      it('Works when there are three pieces on the board', function () {
+	var game = {
+	    gid: 'test',
+            me: 'o',
+	        o: {o0: 0, o1: 1, o2: 5,
 		    piecesOnBoard: 3, state: 35
 		   }
 	    };
 	    var bestMove = bits.setFlags([0,1,7]);
 	    var expectedResult = {
 		gid: 'test', player: 'o',
-		piece: 'player2', from: 5, to: 7
+		piece: 'o2', from: 5, to: 7
 	    };
 
 	    expect(ai.prepareMove(game, bestMove))
