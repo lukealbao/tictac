@@ -42,12 +42,13 @@ div[idx="33554432"] {
     width: 100px;
     height: 100px;
 }
-#gutter h2 {
+#gutter h2.message {
     margin-left: 125px;
     color: #696969;
     font-size: 25px;
     font-family: Helvetica;
     line-height: 4em;
+    opacity: 1;
 }
 #gutter h2:before {
     content: "\ffe9";
