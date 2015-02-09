@@ -32,7 +32,6 @@ body {
 #gutter {
     position: relative;
     top: 500px;
-    z-index: -99999;
 }
 div[idx="33554432"] {
     position: absolute;
@@ -46,7 +45,7 @@ div[idx="33554432"] {
     margin-left: 125px;
     color: #696969;
     font-size: 25px;
-    font-family: Helvetica;
+    font-family: Helvetica, Arial, Sans;
     line-height: 0.9em;
     position: relative;
     top: 2em;
@@ -75,6 +74,58 @@ div[idx="33554432"] {
     border: 1px solid #00a7d5;
     box-shadow: inset 0 0 10px #000;
 }
-
-
-
+.modal {
+    color: #333;
+    position: fixed;
+    font-family: Helvetica, Arial, Sans;
+    width: 550px;
+    height: 350px;
+    top: 30%;
+    left: 50%;
+    margin-left: -275px;
+    margin-top: -175px;
+    background-color: #ccc;
+    border-radius: 10px;
+    box-shadow: 0px 10px 30px #101010;
+    padding: 20px;
+    
+}
+.modal dl {
+    margin-top: 12.5%;
+}
+.modal dt {
+    display: inline;
+    font-weight: bold;
+    margin-right: 0.75em;
+    font-size: 24px;
+    line-height: 2em;
+}
+.modal dd {
+    display: inline;
+    font-size: 16px;
+}
+.modal ol {
+    margin-left: 20px;
+}
+.modal ol > li {
+    margin-top: 20px;
+}
+.hidden {
+    opacity: 0;
+}
+.modal button {
+    padding: 1em;
+    border-radius: 5px;
+    background-color: #ccc;
+    color: #333;
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    border: 1px solid #aaa;
+}
+.modal button:active {
+    background-color: #aaa;
+}
+.modal button:focus {
+    outline: 0;
+}

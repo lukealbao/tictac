@@ -74,7 +74,7 @@ io.sockets.on('connection', function (socket) {
 	dealer.processMoveRequest(request, function (err, res) {
 	    var update = {};
 	    socket.emit('Move Response', err || res);
-	    if (!err) {
+	    if (!err && res.game.active) {
 		io.to(app.connectedUsers[res.nextMove])
 		    .emit('Your Move', res);
 	    }
