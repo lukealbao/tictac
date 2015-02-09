@@ -12,7 +12,12 @@ $(document).ready(function() {
 	opponentPieceCount: 0,
 	pendingMoves: [],
 	me: undefined,
-	opponent: undefined
+	opponent: undefined,
+        rules: {'recenter': 'not seen',
+                'boundaries' : 'not seen',
+                'moving twice': 'not seen',
+                'tap to accept': 'not seen'
+                }
     }; // $env
 
 /*--------------------------------------------------*\
@@ -29,11 +34,6 @@ $(document).ready(function() {
 	    $env.me = response.player;
 	    $env.opponent = $env.me === 'x' ? 'o' : 'x';
 	});
-/*
-	setTimeout(function() {
-	    createPiece($env, {pieceId: $env.me + $env.playerPieceCount,
-			       cell: 'home-plate'});
-	}, 1000); */
     }
     initializeGameBoard();
    
@@ -52,22 +52,36 @@ $(document).ready(function() {
             sendPiece(piece, data.corrections[piece]);
 	}
 	if (data.winner) alert('You win!!');
-    });
-    
-    $env.socket.on('message', function(data) {
-	//console.log(data);
+
+        /////  Messaging  /////
+
+        // Out of Bounds error
+        if (data.errorReason === 'That move is out of bounds'
+            && $env.rules.boundaries !== 'seen') {
+            flashMessage('You must stay in 3x3. Try again.');
+            $env.rules.boundaries = 'seen';
+        }
+
+        // Recenter rule
+        if (Object.keys(data.corrections).length > 0
+            && $env.rules.recenter !== 'seen') {
+            flashMessage('The board is automatically recentered.', 1500);
+            $env.rules.recenter = 'seen';
+        }
     });
     
     $env.socket.on('Your Move', function(data) {
 
         console.log('Machine moved.', data);//data.newMove, data.request.to);
         console.log('\n');
+
 	// Create Player piece if needed
 	if ($env.playerPieceCount < 3) {
 	    setTimeout(function () {
 		createPiece($env, {pieceId: $env.me + $env.playerPieceCount,
 				   cell: '33554432'});
-	    }, 500);
+	    }, 2500);
+
 	}
 
         // The new move
@@ -88,10 +102,25 @@ $(document).ready(function() {
 	        $('#'+piece).attr('current-idx', data.corrections[piece]);
                 sendPiece(piece, data.corrections[piece]);
 	    }
-        }, 1050);
+        }, 2000);
+
 	setTimeout( function () {
 	    if (data.winner) {alert('You Lose!')};
 	}, 750);
+
+        /////  Messaging  /////
+
+        // First move
+        if ($env.playerPieceCount < 1) {
+            flashMessage('Place a piece on the board', 3000);
+        }
+
+        // Recenter rule
+        if (Object.keys(data.corrections).length > 0
+            && $env.rules.recenter !== 'seen') {
+            flashMessage('The board is automatically recentered.', 1500);
+            $env.rules.recenter = 'seen';
+        }
     });
         
 }); // document.ready

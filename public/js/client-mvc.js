@@ -94,6 +94,13 @@ function createPiece ($env, options) {
 	    },
 	    onDragEnd: function(e) {
 		snapToCell.call(this, $env, this._eventTarget);
+                removeMessage($('.message'));
+                if ($env.rules['tap to accept'] !== 'seen') {
+                    setTimeout(function () {
+                        flashMessage('Tap piece to accept');
+                    }, 750);
+                    $env.rules['tap to accept'] = 'seen';
+                }
 	    }
 	}); // Draggable.create()
     }
@@ -180,5 +187,27 @@ function submitMove ($env, piece, to) {
 		  };
     $('#' + piece).attr('current-idx', to);    
     $env.socket.emit('Move Request', request);
+    removeMessage($('.message'));
 }
 
+function flashMessage(str, delay) {
+    delay = delay || 0;
+    var message = document.createElement('h2');
+    message.innerText = str;
+    $(message).addClass('message');
+    $('#gutter').append(message);
+    TweenLite.from(message, 0.5, {'transform': 'translateY(2em)',
+                                  'opacity': 0}).delay(delay / 1000);
+}
+
+function removeMessage(elem) {
+    if (elem) {
+        TweenLite.to(elem, 0.5, {'transform': 'translateY(-2em)',
+                                 'opacity': 0});
+        setTimeout(function () {
+            $(elem).remove();
+        }, 500);
+    }
+}
+  
+  
