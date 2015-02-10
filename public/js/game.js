@@ -12,7 +12,7 @@ $(document).ready(function() {
   |   $env Object holds all client-side variables    |
   \*--------------------------------------------------*/
 var $env = {
-    socket: io(),
+    socket: io({'force new connection': true}),
     cellSize: 100, // 100px to a side
     gridSize: 25, 
     currentGame: null,
@@ -28,6 +28,7 @@ var $env = {
            }
 }; // $env
 
+console.log('$env', $env.socket);
 /*--------------------------------------------------*\
   |               Set up a new Game                  |
   \*--------------------------------------------------*/
