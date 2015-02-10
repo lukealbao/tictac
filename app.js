@@ -20,10 +20,6 @@ app.set('view-engine', 'jade');
 var GameController = require('./lib/game-controller');
 var dealer = new GameController(0);
 
-// AI Controller
-var machine = require('./lib/ai-controller');
-var machineSocket;
-
 // Socket.io
 app.connectedUsers = {};
 
