@@ -149,14 +149,13 @@ var winningStates = struct.winningStates;
 var bits = require('./bits');
 var getFlags = bits.getFlags;
 var STARTIDX = 1 << 25;
-var ioOptions = {'force new connection': true};
+var ioOptions = {'force new connection': true,
+                 'transports': ['websocket']};
 
 var socket = io(ioOptions);
-console.log('AI', socket);
 
 
 socket.on('Your Move', function (data) {
-    console.log('AI received your move', data);
     if (!data.game.active) {
         return;
     }
