@@ -11,6 +11,18 @@ body {
     width: 960px;
     padding: 10px;
 }
+a.github {
+    position: absolute;
+    left: 400px;
+    color: #666;
+    text-decoration: none;
+}
+a.github svg {
+    width: 25px;
+    position: relative;
+    top: 0.33em;
+}
+        
 #stage {
     margin: 0 auto;
     margin-top: 50px;

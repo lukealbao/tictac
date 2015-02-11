@@ -37,9 +37,10 @@ function initializeGameBoard() {
                                 onComplete: function() {$('.modal').remove()}
                                });
     buildGrid($env);
-    var choice = Math.random() > 0.5 ? 'x' : 'o';
     $env.socket.emit('Hello', {user: 'user' + Math.random()});
-    $env.socket.emit('Request New Game',{player: choice});
+    //var choice = Math.random() > 0.5 ? 'x' : 'o';
+    // First player bug
+    $env.socket.emit('Request New Game',{player: 'o'});
     $env.socket.on('New Game Response', function(response) {
 	console.log('New Game', response);
 	$env.currentGame = response.gid;
