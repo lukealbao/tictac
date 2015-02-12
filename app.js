@@ -2,8 +2,10 @@
 
 /* UTILS */
 var path = require('path');
+var fs = require('fs');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
+var logFile = fs.createWriteStream(__dirname + '/access.log', {flags: 'a'});
 
 
 // App Server
@@ -25,7 +27,7 @@ app.connectedUsers = {};
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(__dirname + '/public/favicon.ico'));
-app.use(logger('dev'));
+app.use(logger('combined', {stream: logFile}));
 app.use(express.static(path.join(__dirname, 'public')));
 
 io.sockets.on('connection', function (socket) {
