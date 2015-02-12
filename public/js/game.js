@@ -1,10 +1,12 @@
 $(document).ready(function() {
 
-    if (!localStorage.getItem('supressInstructions')) {
+    if (!localStorage.getItem('suppressInstructions')) {
         $('#gutter').load('modal.html', function () {
             TweenLite.to($('#instructions-2'), 0, {left: '-50%'});
             TweenLite.from($('#instructions-1'), 0.5, {left: '-50%', ease: 'easeInOut'});
             });
+    } else {
+        initializeGameBoard();
     }
 });
 
@@ -36,7 +38,12 @@ console.log('$env', $env.socket);
   |               Set up a new Game                  |
   \*--------------------------------------------------*/
 function initializeGameBoard() {
-    var choice = Math.random() > 0.5 ? 'x' : 'o';
+
+    if ($('#suppress-instructions').prop('checked')) {
+        localStorage.setItem('suppressInstructions', true);
+    }
+
+
     TweenLite.to('.modal', 0.75, {left: '200%', delay: 0.5,
                                 onComplete: function() {$('.modal').remove()}
                                });
@@ -45,8 +52,9 @@ function initializeGameBoard() {
     $env.socket.on('Hello', function(response) {
         $env.userSocketId = response.currentSocket;
     });
-    $env.socket.emit('Request New Game',{player: choice,
-                                         opponent: 'Machine' + $env.randomId});
+
+    newGame(true);
+
     $env.socket.on('New Game Response', function(response) {
 	console.log('New Game', response);
 	$env.currentGame = response.gid;
@@ -145,3 +153,22 @@ function loadRules () {
     tl.to($('#instructions-1'), 0.75, {left: '200%', delay: 0.5});
     tl.to($('#instructions-2'), 0.75, {left: '50%'});
 }
+
+function newGame (initialPageLoad) {
+    var choice = Math.random() > 0.5 ? 'x' : 'o';
+    if (!initialPageLoad) {
+        TweenMax.staggerTo($('.player-piece, .opponent-piece'),
+                           1,
+                           {y: '1000px', ease: Power1.easeIn},
+                           0.1,
+                          onCompleteAll = function () {
+                              $('.player-piece, .opponent-piece').remove();
+                          });
+
+    }
+
+    $env.socket.emit('Request New Game',{player: choice,
+                                         opponent: 'Machine' + $env.randomId});
+}
+                     
+                                          

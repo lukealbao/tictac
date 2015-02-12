@@ -22,7 +22,21 @@ a.github svg {
     position: relative;
     top: 0.33em;
 }
-        
+#new-game {
+    padding: 1em;
+    background-color: #333;
+    color: #666;
+    position: absolute;
+    right: 250px;
+    top: 10px;
+    letter-spacing: 1.4;
+    border: 2px solid #666;
+    border-radius: 5px;
+}
+#new-game:active {
+    background-color: #666;
+    color: #333;
+}
 #stage {
     margin: 0 auto;
     margin-top: 50px;
@@ -36,6 +50,7 @@ a.github svg {
     position: absolute;
     width: 500px;
     height: 500px;
+    border-radius: 5px;
 }
 .cell {
     position: absolute;
@@ -63,13 +78,6 @@ div[idx="33554432"] {
     top: 2em;
     opacity: 1;
 }
-/*#gutter h2:before {
-    content: "\ffe9";
-    position: relative;
-    left: -5px;
-    top: 5px;
-    font-size: 2.25em;
-}*/
 .player-piece {
     position: absolute;
     background: linear-gradient(to right, #87e0fd 0%,
@@ -122,6 +130,11 @@ div[idx="33554432"] {
 .modal ol > li {
     margin-top: 20px;
 }
+.modal .controls {
+    position: absolute;
+    bottom: 20px;
+    left: 40px;
+}
 .hidden {
     opacity: 0;
 }
@@ -138,6 +151,6 @@ div[idx="33554432"] {
 .modal button:active {
     background-color: #aaa;
 }
-.modal button:focus {
+button:focus {
     outline: 0;
 }
