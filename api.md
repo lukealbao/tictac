@@ -12,8 +12,8 @@
 <li><a href="#sec-2">2. <span class="todo TODO">TODO</span> Fixes</a>
 <ul>
 <li><a href="#sec-2-1">2.1. <span class="todo TODO">TODO</span> Animation Z-index</a></li>
-<li><a href="#sec-2-2">2.2. <span class="todo TODO">TODO</span> Put AI into child processes</a></li>
-<li><a href="#sec-2-3">2.3. <span class="todo TODO">TODO</span> First Move Problem</a></li>
+<li><a href="#sec-2-2">2.2. <span class="todo TODO">TODO</span> First Move Problem</a></li>
+<li><a href="#sec-2-3">2.3. <span class="done DONE">DONE</span> Put AI into child processes</a></li>
 <li><a href="#sec-2-4">2.4. <span class="done DONE">DONE</span> Stagger move animations</a></li>
 <li><a href="#sec-2-5">2.5. <span class="done DONE">DONE</span> Send current game state with move request errors</a></li>
 <li><a href="#sec-2-6">2.6. <span class="done DONE">DONE</span> Pieces becoming unmovable</a></li>
@@ -54,27 +54,33 @@
     -   **player:** The requesting player. Either 'x' or 'o'.
     -   **from:** The current index of the moving piece.
     -   **to:** The index requested of the moving piece.
-    -   **piece:** The DOM ID of the piece. E.g., 'player0'.
+    -   **piece:** The DOM ID of the piece. E.g., 'x0'.
 
 -   *@return* Response Object - sent to requester
     -   **ok:** Boolean.
+    -   **TODO active:** REMOVE &#x2013; duplicate of game object.
+    -   **game:** Object. Full representation.
     -   **error:** If there is one.
     -   **errReason:** If there is one.
-    -   **winner:** Null,'x', or 'o'.
+    -   **TODO winner:** null,'x', or 'o'. REMOVE DUplicate
     -   **request:** Ce qui est arrivee comme l'objet de la requete.
-    -   **moves:** A map of DOM ids of elements to their new indexes.
-    -   **nextMove:** 'x' or 'o', whoever's turn it is.
+    -   **newMove:** an object, {piece DOM ID : new<sub>index</sub>}
+    -   **nextMove:** the uid for the next player's move
+    -   **corrections:** Object mapping DOM ids to new indexes.
     -   **x:** The state of all of x's pieces. Used by AI.
     -   **o:** The state of all of o's pieces. Used by AI.
 
 -   *@return* \*Event: 'Your Move'\* - Response object sent to opponent
     -   **ok:** Boolean.
+    -   **TODO active:** REMOVE &#x2013; duplicate of game object.
+    -   **game:** Object. Full representation.
     -   **error:** If there is one.
     -   **errReason:** If there is one.
-    -   **winner:** Null,'x', or 'o'.
+    -   **TODO winner:** null,'x', or 'o'. REMOVE DUplicate
     -   **request:** Ce qui est arrivee comme l'objet de la requete.
-    -   **moves:** A map of DOM ids of elements to their new indexes.
-    -   **nextMove:** 'x' or 'o', whoever's turn it is.
+    -   **newMove:** an object, {piece DOM ID : new<sub>index</sub>}
+    -   **nextMove:** the uid for the next player's move
+    -   **corrections:** Object mapping DOM ids to new indexes.
     -   **x:** The state of all of x's pieces. Used by AI.
     -   **o:** The state of all of o's pieces. Used by AI.
 
@@ -85,16 +91,16 @@
 -   **Problem:** A moving piece is sent underneath other pieces.
 -   Look to Greensock API for z-index while doing \`#sendPiece()\`.
 
-## TODO Put AI into child processes<a id="sec-2-2" name="sec-2-2"></a>
+## TODO First Move Problem<a id="sec-2-2" name="sec-2-2"></a>
+
+-   **Problem:** Always chooses an opposite corner.
+-   Look to the scoring mechanism.
+
+## DONE Put AI into child processes<a id="sec-2-3" name="sec-2-3"></a>
 
 -   **Problem:** Server becomes unresponsive when searching for a move.
 -   Spawn child processes for AI workers.
 -   Create a queue for round-robining the workers.
-
-## TODO First Move Problem<a id="sec-2-3" name="sec-2-3"></a>
-
--   **Problem:** Always chooses an opposite corner.
--   Look to the scoring mechanism.
 
 ## DONE Stagger move animations<a id="sec-2-4" name="sec-2-4"></a>
 

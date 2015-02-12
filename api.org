@@ -59,15 +59,15 @@
   - Problem :: A moving piece is sent underneath other pieces.
   - Look to Greensock API for z-index while doing `#sendPiece()`.
 
-** TODO Put AI into child processes
-  - Problem :: Server becomes unresponsive when searching for a move.
-  - Spawn child processes for AI workers.
-  - Create a queue for round-robining the workers.
 ** TODO First Move Problem
   - Problem :: Always chooses an opposite corner.
   - Look to the scoring mechanism.
 
 
+** DONE Put AI into child processes
+  - Problem :: Server becomes unresponsive when searching for a move.
+  - Spawn child processes for AI workers.
+  - Create a queue for round-robining the workers.
 ** DONE Stagger move animations
   - Problem :: Animations happen all at once and is disorienting in a
                bad way.
