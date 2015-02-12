@@ -12,8 +12,7 @@ $(document).ready(function() {
   |   $env Object holds all client-side variables    |
   \*--------------------------------------------------*/
 var $env = {
-    socket: io({'force new connection': true,
-                'transports': ['websocket']}),
+    socket: io({'force new connection': true});
     cellSize: 100, // 100px to a side
     gridSize: 25, 
     currentGame: null,
