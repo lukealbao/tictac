@@ -25,6 +25,7 @@ I don't recall where I learned this game, but the original was played
 with sugar packets while waiting for food at a restaurant. I've always
 thought it was super cool.
 
+Want to play it? http://tictac.relevantish.com
 
 ## Why is it here?
 I intend to put this up live for people to play. The first version
