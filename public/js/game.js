@@ -20,6 +20,7 @@ var $env = {
     playerPieceCount: 0,
     opponentPieceCount: 0,
     pendingMoves: [],
+    randomId: (Math.random() * 10e6 | 0).toString(16),
     me: undefined,
     opponent: undefined,
     rules: {'recenter': 'not seen',
@@ -34,14 +35,13 @@ console.log('$env', $env.socket);
   |               Set up a new Game                  |
   \*--------------------------------------------------*/
 function initializeGameBoard() {
+    var choice = Math.random() > 0.5 ? 'x' : 'o';
     TweenLite.to('.modal', 0.75, {left: '200%', delay: 0.5,
                                 onComplete: function() {$('.modal').remove()}
                                });
     buildGrid($env);
-    $env.socket.emit('Hello', {user: 'user' + Math.random()});
-    //var choice = Math.random() > 0.5 ? 'x' : 'o';
-    // First player bug
-    $env.socket.emit('Request New Game',{player: 'o'});
+    $env.socket.emit('Hello', {user: 'user' + $env.randomId});
+    $env.socket.emit('Request New Game',{player: choice});
     $env.socket.on('New Game Response', function(response) {
 	console.log('New Game', response);
 	$env.currentGame = response.gid;
