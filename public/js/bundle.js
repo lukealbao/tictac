@@ -178,7 +178,7 @@ socket.on('Your Move', function (data) {
 });
 
 socket.on('connect', function (s) {
-    socket.emit('Hello', {user: 'Machine'});
+    socket.emit('Hello', {user: 'Machine' + Math.random()});
 });
 
 socket.on('Move Response', function (response) {
