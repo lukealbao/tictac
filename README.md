@@ -25,12 +25,11 @@ I don't recall where I learned this game, but the original was played
 with sugar packets while waiting for food at a restaurant. I've always
 thought it was super cool.
 
-Want to play it? http://tictac.relevantish.com
-
 ## Why is it here?
-I intend to put this up live for people to play. The first version
+~~I intend to put this up live for people to play. The first version
 should be up within a week or so. But you are seeing this because I'm
-trying to find a job and this is some code I wanted to share. So, to
+trying to find a job and this is some code I wanted to share.~~ Want to play it? http://tictac.relevantish.com. It's still in development
+ So, to
 help anyone who wants to look over this, a brief description of the
 repo:
 
