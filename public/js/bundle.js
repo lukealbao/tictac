@@ -154,6 +154,9 @@ var ioOptions = {'force new connection': true};
 
 var socket = io(ioOptions);
 
+socket.on('Hello', function (response) {
+    $env.machineSocketId = response.currentSocket;
+});
 
 socket.on('Your Move', function (data) {
     if (!data.game.active) {
