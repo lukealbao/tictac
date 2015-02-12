@@ -59,6 +59,7 @@ function initializeGameBoard() {
 	console.log('New Game', response);
 	$env.currentGame = response.gid;
 	$env.me = response.player;
+        $env.playerPieceCount = $env.opponentPieceCount = 0;
 	$env.opponent = $env.me === 'x' ? 'o' : 'x';
     });
 }
@@ -159,16 +160,23 @@ function newGame (initialPageLoad) {
     if (!initialPageLoad) {
         TweenMax.staggerTo($('.player-piece, .opponent-piece'),
                            1,
-                           {y: '1000px', ease: Power1.easeIn},
+                           {
+                               y: '1000px',
+                               ease: Power1.easeIn
+                           },
                            0.1,
-                          onCompleteAll = function () {
-                              $('.player-piece, .opponent-piece').remove();
-                          });
+                           function () {
+                               $('.player-piece, .opponent-piece').remove();
+                               $env.socket.emit('Request New Game',{player: choice,
+                                                                    opponent: 'Machine' + $env.randomId});
+                            }
+                          );
 
+    } else {
+        $env.socket.emit('Request New Game',{player: choice,
+                                             opponent: 'Machine' + $env.randomId});
     }
 
-    $env.socket.emit('Request New Game',{player: choice,
-                                         opponent: 'Machine' + $env.randomId});
 }
                      
                                           
