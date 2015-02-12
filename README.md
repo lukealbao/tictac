@@ -28,10 +28,12 @@ thought it was super cool.
 ## Why is it here?
 ~~I intend to put this up live for people to play. The first version
 should be up within a week or so. But you are seeing this because I'm
-trying to find a job and this is some code I wanted to share.~~ Want to play it? http://tictac.relevantish.com. It's still in development
- So, to
-help anyone who wants to look over this, a brief description of the
-repo:
+trying to find a job and this is some code I wanted to share.~~
+
+Want to play it? http://tictac.relevantish.com. It's still in development.
+
+So, to help anyone who wants to look over this, a brief description of
+the repo:
 
 ## General structure
 This game runs on Node via Express.js. It accepts HTTP requests and
