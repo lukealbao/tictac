@@ -30,7 +30,7 @@ thought it was super cool.
 should be up within a week or so. But you are seeing this because I'm
 trying to find a job and this is some code I wanted to share.~~
 
-Want to play it? http://tictac.relevantish.com. It's still in development.
+Want to play it? http://bit.ly/tictacyo. It's still in development.
 
 So, to help anyone who wants to look over this, a brief description of
 the repo:
